@@ -1,0 +1,1651 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Coding Model Arena — Gemma vs Devstral vs Codestral</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <nav class="nav" id="top">
+            <div class="nav-logo">
+                <svg viewBox="0 0 28 28" fill="none">
+                    <rect
+                        x="2"
+                        y="2"
+                        width="10"
+                        height="10"
+                        rx="3"
+                        fill="#7c4dff"
+                    />
+                    <rect
+                        x="16"
+                        y="2"
+                        width="10"
+                        height="10"
+                        rx="3"
+                        fill="#4caf50"
+                    />
+                    <rect
+                        x="2"
+                        y="16"
+                        width="10"
+                        height="10"
+                        rx="3"
+                        fill="#ff7043"
+                    />
+                    <rect
+                        x="16"
+                        y="16"
+                        width="10"
+                        height="10"
+                        rx="3"
+                        fill="#546e7a"
+                    />
+                </svg>
+                Model Arena
+            </div>
+            <ul class="nav-links">
+                <li><a href="#overview" class="active">Overview</a></li>
+                <li><a href="#tests">Tests</a></li>
+                <li><a href="#scorecards">Scorecards</a></li>
+                <li><a href="#verdict">Verdict</a></li>
+            </ul>
+        </nav>
+
+        <section class="hero" id="overview">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Peer-Reviewed Evaluation
+            </div>
+            <h1>Three Models Walk Into a Review…</h1>
+            <p>
+                An objective, line-by-line evaluation of three coding assistants
+                judged by Claude Sonnet 4.6. No sponsors. No spin. Just code
+                quality.
+            </p>
+            <div class="hero-models">
+                <div class="model-chip gemma">
+                    <span>G</span>
+                    Gemma 4 E4B
+                    <span class="size">~4.5B eff.</span>
+                </div>
+                <div class="model-chip devstral">
+                    <span>D</span>
+                    Devstral
+                    <span class="size">~24B</span>
+                </div>
+                <div class="model-chip codestral">
+                    <span>C</span>
+                    Codestral
+                    <span class="size">22B</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="tests">
+            <div class="section-header">
+                <h2>⚔️ Deep Dive: Test-by-Test</h2>
+                <p>
+                    Each model was evaluated on three distinct coding tasks
+                    spanning completion, async architecture, and concurrency
+                    reasoning.
+                </p>
+            </div>
+
+            <div class="test-tabs">
+                <button class="test-tab active" data-tab="fim">
+                    Test 1 — FIM Parser <span class="tab-score">YAML</span>
+                </button>
+                <button class="test-tab" data-tab="async">
+                    Test 2 — Async Refactor
+                    <span class="tab-score">aiohttp</span>
+                </button>
+                <button class="test-tab" data-tab="concurrency">
+                    Test 3 — Concurrency Bug
+                    <span class="tab-score">Race Cond.</span>
+                </button>
+            </div>
+
+            <div class="test-content active" id="fim">
+                <div class="test-overview">
+                    <h3>
+                        <span class="icon">📝</span> Fill-In-Context: YAML
+                        Config Parser
+                    </h3>
+                    <p>
+                        Models were given a partial YAML loading function and
+                        asked to complete the gap — handling key lookups,
+                        validation, and error cases correctly.
+                    </p>
+                    <div class="prompt-box">
+                        <span class="prompt-label">PROMPT</span
+                        ><code
+                            >def load_config(filepath: str, key: str) -> Any:
+                            """Load a YAML config file, return a specific key's
+                            value. Raise FileNotFoundError, yaml.YAMLError, or
+                            ValueError.""" # ← FILL IN HERE ←</code
+                        >
+                    </div>
+                </div>
+
+                <div class="model-cards">
+                    <div class="model-card winner">
+                        <div class="winner-badge">🏆 Winner</div>
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar gemma">G</div>
+                                <div>
+                                    <div class="model-name">Gemma 4 E4B</div>
+                                    <div class="model-meta">
+                                        ~4.5B effective params
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge gemma animate-score"
+                                data-final="9"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Caught
+                                <code>FileNotFoundError</code> and
+                                <code>yaml.YAMLError</code> as distinct failure
+                                modes — the only model to do so.<br /><br />
+                                <span class="pro">✓</span> Checks
+                                <code>config[key]</code> is <code>None</code> in
+                                addition to key absence, catching the empty YAML
+                                edge case.<br /><br />
+                                <span class="neutral">⚡</span> Added a full
+                                test harness with cleanup — over-engineering for
+                                a FIM task, but shows deep understanding of
+                                context.<br /><br />
+                                <span class="con">✗</span> Rewrote the whole
+                                function instead of filling just the gap (same
+                                issue as Codestral).
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Gemma's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">import</span> yaml
+                                        <span class="keyword">import</span> os
+
+                                        <span class="keyword">def</span>
+                                        <span class="function">load_config</span
+                                        >(filepath: str, key: str):
+                                        <span class="number"
+                                            >"""Load a YAML config file, return
+                                            a specific key's value."""</span
+                                        >
+                                        <span class="keyword">if not</span>
+                                        os.path.exists(filepath):
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin"
+                                            >FileNotFoundError</span
+                                        >(
+                                        <span class="string"
+                                            >f"Config file not found:
+                                            {filepath}"</span
+                                        >
+                                        )
+
+                                        <span class="keyword">try</span>:
+                                        <span class="keyword">with</span>
+                                        open(filepath, 'r')
+                                        <span class="keyword">as</span> f:
+                                        config = yaml.safe_load(f)
+                                        <span class="keyword">except</span>
+                                        yaml.YAMLError
+                                        <span class="keyword">as</span> e:
+                                        <span class="keyword">raise</span>
+                                        yaml.YAMLError(
+                                        <span class="string"
+                                            >f"Invalid YAML in {filepath}:
+                                            {e}"</span
+                                        >
+                                        ) <span class="keyword">from</span> e
+
+                                        <span class="keyword">if</span> config
+                                        <span class="keyword">is None</span>
+                                        <span class="keyword">or</span> key
+                                        <span class="keyword">not in</span>
+                                        config:
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin">ValueError</span>(
+                                        <span class="string"
+                                            >f"Missing required configuration
+                                            key: '{key}'"</span
+                                        >
+                                        )
+
+                                        <span class="keyword">if</span>
+                                        config[key]
+                                        <span class="keyword">is None</span>:
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin">ValueError</span>(
+                                        <span class="string"
+                                            >f"Configuration key '{key}' has no
+                                            value"</span
+                                        >
+                                        )
+
+                                        <span class="keyword">return</span>
+                                        config[key]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="model-card">
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar devstral">D</div>
+                                <div>
+                                    <div class="model-name">Devstral</div>
+                                    <div class="model-meta">~24B params</div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge devstral animate-score"
+                                data-final="8"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Filled only the gap —
+                                cleaner FIM discipline than both competitors.<br /><br />
+                                <span class="pro">✓</span> Error message
+                                <span class="string"
+                                    >"Missing required configuration key"</span
+                                >
+                                is slightly better phrased.<br /><br />
+                                <span class="con">✗</span> Misses the
+                                <code>None</code>-return edge case on empty YAML
+                                — same as Codestral.
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Devstral's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">if not</span>
+                                        os.path.exists(filepath):
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin"
+                                            >FileNotFoundError</span
+                                        >(
+                                        <span class="string"
+                                            >f"Config file not found:
+                                            {filepath}"</span
+                                        >
+                                        )
+
+                                        <span class="keyword">try</span>:
+                                        <span class="keyword">with</span>
+                                        open(filepath)
+                                        <span class="keyword">as</span> f:
+                                        config = yaml.safe_load(f)
+                                        <span class="keyword">except</span>
+                                        yaml.YAMLError
+                                        <span class="keyword">as</span> exc:
+                                        <span class="keyword">raise</span>
+                                        yaml.YAMLError(
+                                        <span class="string"
+                                            >f"Failed to parse YAML:
+                                            {exc}"</span
+                                        >
+                                        ) <span class="keyword">from</span> exc
+
+                                        <span class="keyword">if</span> key
+                                        <span class="keyword">not in</span>
+                                        config:
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin">ValueError</span>(
+                                        <span class="string"
+                                            >f"Missing required configuration
+                                            key: '{key}'"</span
+                                        >
+                                        )
+
+                                        <span class="keyword">return</span>
+                                        config[key]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="model-card">
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar codestral">C</div>
+                                <div>
+                                    <div class="model-name">Codestral</div>
+                                    <div class="model-meta">22B params</div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge codestral animate-score"
+                                data-final="7"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Got the core logic
+                                right — <code>yaml.safe_load</code>, key
+                                validation, raises
+                                <code>ValueError</code>.<br /><br />
+                                <span class="con">✗</span> Repeated function
+                                signature and imports outside FIM context —
+                                sloppy FIM discipline.<br /><br />
+                                <span class="con">✗</span> No handling for
+                                <code>yaml.safe_load</code> returning
+                                <code>None</code> (empty file).<br /><br />
+                                <span class="con">✗</span> Same whole-function
+                                rewrite issue as Gemma.
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Codestral's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">import</span> yaml
+                                        <span class="keyword">import</span> os
+
+                                        <span class="keyword">def</span>
+                                        <span class="function">load_config</span
+                                        >(filepath: str, key: str):
+                                        <span class="keyword">if not</span>
+                                        os.path.exists(filepath):
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin"
+                                            >FileNotFoundError</span
+                                        >(
+                                        <span class="string"
+                                            >f"File not found: {filepath}"</span
+                                        >
+                                        )
+
+                                        <span class="keyword">try</span>:
+                                        <span class="keyword">with</span>
+                                        open(filepath, 'r')
+                                        <span class="keyword">as</span> f:
+                                        config = yaml.safe_load(f)
+                                        <span class="keyword">except</span>
+                                        yaml.YAMLError
+                                        <span class="keyword">as</span> e:
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin">ValueError</span>(
+                                        <span class="string"
+                                            >f"Invalid YAML: {e}"</span
+                                        >
+                                        )
+
+                                        <span class="keyword">if</span> key
+                                        <span class="keyword">not in</span>
+                                        config:
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin">ValueError</span>(
+                                        <span class="string"
+                                            >f"Key '{key}' not found in the
+                                            config file"</span
+                                        >
+                                        )
+
+                                        <span class="keyword">return</span>
+                                        config[key]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <h4>Key Distinction: Exception Handling</h4>
+                        <p>
+                            Gemma is the only model that re-raises
+                            <code>yaml.YAMLError</code> as
+                            <code>yaml.YAMLError</code> (not
+                            <code>ValueError</code> like Codestral). This
+                            matters — callers may want to distinguish parse
+                            errors from validation errors.
+                        </p>
+                    </div>
+                    <div class="detail-item">
+                        <h4>Key Distinction: None Guard</h4>
+                        <p>
+                            <code>yaml.safe_load</code> returns
+                            <code>None</code> on empty files. Gemma checks
+                            <code>if config is None</code>. Devstral and
+                            Codestral don't — their code crashes with
+                            <code
+                                >TypeError: argument of type 'NoneType' is not
+                                iterable</code
+                            >
+                            on an empty config file.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-content" id="async">
+                <div class="test-overview">
+                    <h3>
+                        <span class="icon">⚡</span> Async Refactor: aiohttp API
+                        Fetch
+                    </h3>
+                    <p>
+                        Models were asked to refactor a synchronous API fetch
+                        into proper async with error handling. The task exposed
+                        critical differences in async API familiarity.
+                    </p>
+                    <div class="prompt-box">
+                        <span class="prompt-label">PROMPT</span
+                        ><code
+                            >Refactor this function to be async with proper
+                            error handling, using aiohttp. Separate concerns
+                            into fetch + parse. Include timeout handling and
+                            specific exception types. def
+                            fetch_user_data(user_id: str, timeout: int = 30) ->
+                            dict: url =
+                            f"https://api.example.com/users/{user_id}" resp =
+                            requests.get(url, timeout=timeout) data =
+                            resp.json() return data["profile"]</code
+                        >
+                    </div>
+                </div>
+
+                <div class="model-cards">
+                    <div class="model-card">
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar gemma">G</div>
+                                <div>
+                                    <div class="model-name">Gemma 4 E4B</div>
+                                    <div class="model-meta">
+                                        ~4.5B effective params
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge gemma animate-score"
+                                data-final="8"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Gets the
+                                <code
+                                    >aiohttp.ClientTimeout(total=timeout)</code
+                                >
+                                syntax right — avoiding Codestral's runtime
+                                failure.<br /><br />
+                                <span class="pro">✓</span> Catches specific
+                                exceptions including
+                                <code>ClientConnectorError</code> and
+                                <code>InvalidURL</code> — neither other model
+                                did this.<br /><br />
+                                <span class="pro">✓</span> Clean separation into
+                                <code>_fetch_raw_user_response</code> and
+                                <code>_validate_and_extract_profile</code
+                                >.<br /><br />
+                                <span class="con">✗</span> Over-engineered —
+                                prints everywhere instead of proper logging,
+                                <code>USER_STATUS_ACTIVE</code> constant for one
+                                string, demo <code>main()</code> function, run
+                                comments — all noise.<br /><br />
+                                <span class="con">✗</span>
+                                <code>_validate_and_extract_profile</code> is
+                                marked <code>async</code> for no reason — no
+                                awaits inside it.
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Gemma's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">import</span>
+                                        aiohttp
+                                        <span class="keyword">import</span>
+                                        asyncio USER_STATUS_ACTIVE =
+                                        <span class="string">"active"</span>
+
+                                        <span class="keyword">async def</span>
+                                        <span class="function"
+                                            >_fetch_raw_user_response</span
+                                        >(session, url, timeout):
+                                        <span class="keyword">async with</span>
+                                        session.get( url,
+                                        timeout=aiohttp.ClientTimeout(total=timeout)
+                                        )
+                                        <span class="keyword">as</span>
+                                        response:
+                                        <span class="keyword">if</span>
+                                        response.ok
+                                        <span class="keyword">is False</span>:
+                                        <span class="keyword">raise</span>
+                                        aiohttp.ClientError(
+                                        <span class="string"
+                                            >f"HTTP {response.status}"</span
+                                        >
+                                        )
+                                        <span class="keyword"
+                                            >return await</span
+                                        >
+                                        response.json()
+
+                                        <span class="keyword">async def</span>
+                                        <span class="function"
+                                            >_validate_and_extract_profile</span
+                                        >(data):
+                                        <span class="comment"
+                                            ># unnecessary async — no await
+                                            inside</span
+                                        >
+                                        <span class="keyword">if</span>
+                                        data.get(<span class="string"
+                                            >"status"</span
+                                        >) != USER_STATUS_ACTIVE:
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin">ValueError</span
+                                        >(<span class="string"
+                                            >"User not active"</span
+                                        >)
+                                        <span class="keyword">return</span>
+                                        data[<span class="string"
+                                            >"profile"</span
+                                        >]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="model-card winner">
+                        <div class="winner-badge">🏆 Winner</div>
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar devstral">D</div>
+                                <div>
+                                    <div class="model-name">Devstral</div>
+                                    <div class="model-meta">~24B params</div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge devstral animate-score"
+                                data-final="9"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Correct
+                                <code
+                                    >aiohttp.ClientTimeout(total=timeout)</code
+                                >
+                                — working implementation, not broken code.<br /><br />
+                                <span class="pro">✓</span> Catches specific
+                                exceptions: <code>aiohttp.ClientError</code>,
+                                <code>asyncio.TimeoutError</code>.<br /><br />
+                                <span class="pro">✓</span> Checks
+                                <code>response.ok</code> before parsing JSON.<br /><br />
+                                <span class="pro">✓</span> Uses
+                                <code>data.get("status")</code> defensively
+                                instead of direct key access.<br /><br />
+                                <span class="neutral">⚡</span> Minor: catching
+                                <code>KeyError</code> and printing then
+                                returning <code>None</code> still swallows
+                                errors slightly — could raise or log more
+                                specifically.
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Devstral's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">import</span>
+                                        aiohttp
+                                        <span class="keyword">import</span>
+                                        asyncio
+
+                                        <span class="keyword">async def</span>
+                                        <span class="function">fetch_user</span
+                                        >(user_id: str, timeout: int =
+                                        <span class="number">30</span>) -> dict:
+                                        <span class="keyword">try</span>:
+                                        <span class="keyword">async with</span>
+                                        aiohttp.ClientSession()
+                                        <span class="keyword">as</span> session:
+                                        <span class="keyword">async with</span>
+                                        session.get(
+                                        <span class="string"
+                                            >f"https://api.example.com/users/{user_id}"</span
+                                        >,
+                                        timeout=aiohttp.ClientTimeout(total=timeout)
+                                        )
+                                        <span class="keyword">as</span>
+                                        response:
+                                        <span class="keyword">if not</span>
+                                        response.ok:
+                                        <span class="builtin">print</span>(<span
+                                            class="string"
+                                            >f"HTTP {response.status}"</span
+                                        >)
+                                        <span class="keyword">return None</span>
+                                        data =
+                                        <span class="keyword">await</span>
+                                        response.json()
+                                        <span class="keyword">return</span>
+                                        parse_user(data)
+                                        <span class="keyword">except</span>
+                                        aiohttp.ClientError
+                                        <span class="keyword">as</span> e:
+                                        <span class="builtin">print</span>(<span
+                                            class="string"
+                                            >f"Network error: {e}"</span
+                                        >)
+                                        <span class="keyword">return None</span>
+                                        <span class="keyword">except</span>
+                                        asyncio.TimeoutError:
+                                        <span class="builtin">print</span>(<span
+                                            class="string"
+                                            >"Request timed out"</span
+                                        >)
+                                        <span class="keyword">return None</span>
+
+                                        <span class="keyword">def</span>
+                                        <span class="function">parse_user</span
+                                        >(data: dict):
+                                        <span class="keyword">if</span>
+                                        data.get(<span class="string"
+                                            >"status"</span
+                                        >) !=
+                                        <span class="string">"active"</span>:
+                                        <span class="keyword">raise</span>
+                                        <span class="builtin">ValueError</span
+                                        >(<span class="string"
+                                            >"User not active"</span
+                                        >)
+                                        <span class="keyword">return</span>
+                                        data[<span class="string"
+                                            >"profile"</span
+                                        >]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="model-card">
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar codestral">C</div>
+                                <div>
+                                    <div class="model-name">Codestral</div>
+                                    <div class="model-meta">22B params</div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge codestral animate-score"
+                                data-final="6"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Architecture is right
+                                — split into <code>fetch_user</code>,
+                                <code>parse_user</code>,
+                                <code>fetch_user_data</code> is clean separation
+                                of concerns.<br /><br />
+                                <span class="con">✗</span>
+                                <strong
+                                    >Bare <code>except Exception</code> with a
+                                    <code>print</code></strong
+                                >
+                                — lazy error handling, swallows errors silently
+                                and returns <code>None</code> with no
+                                distinction between "not found" and "network
+                                failure".<br /><br />
+                                <span class="con">✗</span>
+                                <strong>Runtime failure:</strong>
+                                <code>aiohttp</code>'s timeout takes an
+                                <code>aiohttp.ClientTimeout</code> object, not a
+                                plain <code>int</code>. This code would crash at
+                                runtime.
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Codestral's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">import</span>
+                                        aiohttp
+                                        <span class="keyword">import</span>
+                                        asyncio
+
+                                        <span class="keyword">async def</span>
+                                        <span class="function"
+                                            >fetch_user_data</span
+                                        >(user_id, timeout=<span class="number"
+                                            >30</span
+                                        >): url =
+                                        <span class="string"
+                                            >f"https://api.example.com/users/{user_id}"</span
+                                        >
+                                        <span class="keyword">try</span>:
+                                        <span class="keyword">async with</span>
+                                        aiohttp.ClientSession()
+                                        <span class="keyword">as</span> session:
+                                        <span class="keyword">async with</span>
+                                        session.get( url, timeout=timeout
+                                        <span class="comment"
+                                            ># ✗ WRONG — expects
+                                            ClientTimeout</span
+                                        >
+                                        )
+                                        <span class="keyword">as</span>
+                                        response: data =
+                                        <span class="keyword">await</span>
+                                        response.json()
+                                        <span class="keyword">return</span>
+                                        parse_user(data)
+                                        <span class="keyword">except</span>
+                                        <span class="builtin">Exception</span>
+                                        <span class="keyword">as</span> e:
+                                        <span class="comment"
+                                            ># ✗ bare except — lazy</span
+                                        >
+                                        <span class="builtin">print</span>(<span
+                                            class="string"
+                                            >f"Error: {e}"</span
+                                        >)
+                                        <span class="comment"
+                                            ># ✗ print in production code</span
+                                        >
+                                        <span class="keyword">return None</span>
+                                        <span class="comment"
+                                            ># ✗ swallows all errors</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <h4>🚨 The aiohttp Timeout Bug</h4>
+                        <p>
+                            Codestral passes a plain <code>int</code> as the
+                            timeout — <code>aiohttp</code> expects
+                            <code>aiohttp.ClientTimeout</code>. This will raise
+                            <code>ValueError</code> at runtime. Gemma and
+                            Devstral both use the correct object constructor.
+                        </p>
+                    </div>
+                    <div class="detail-item">
+                        <h4>🏗️ Architecture vs. Correctness</h4>
+                        <p>
+                            Codestral had the best architectural split. Devstral
+                            had the tightest production-ready implementation.
+                            Gemma went furthest with granular exception types
+                            but added unnecessary boilerplate. No model was
+                            perfect.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-content" id="concurrency">
+                <div class="test-overview">
+                    <h3>
+                        <span class="icon">🔄</span> Concurrency Bug: Cache Race
+                        Condition
+                    </h3>
+                    <p>
+                        A threaded cache with <code>fetch_fn</code> had a TOCTOU
+                        race: two threads could both miss the cache and make
+                        duplicate fetches. Models were asked to identify and fix
+                        the bug.
+                    </p>
+                    <div class="prompt-box">
+                        <span class="prompt-label">BUGGY CODE</span
+                        ><code
+                            >cache = {} def get_cached(key, fetch_fn): if key
+                            not in cache: cache[key] = fetch_fn(key) # Race
+                            condition! return cache[key] # Two threads calling
+                            get_cached("user_1", fetch_from_db) # simultaneously
+                            may both fetch — defeating the cache purpose.</code
+                        >
+                    </div>
+                </div>
+
+                <div class="model-cards">
+                    <div class="model-card">
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar gemma">G</div>
+                                <div>
+                                    <div class="model-name">Gemma 4 E4B</div>
+                                    <div class="model-meta">
+                                        ~4.5B effective params
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge gemma animate-score"
+                                data-final="7"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Identified the race
+                                condition correctly. The step-by-step Thread A/B
+                                walkthrough is the clearest explanation of all
+                                three models.<br /><br />
+                                <span class="pro">✓</span> Also offered an
+                                <code>asyncio.Lock</code> version which the
+                                others skipped — shows breadth of knowledge.<br /><br />
+                                <span class="con">✗</span>
+                                <strong
+                                    >The fix serialises all cache access</strong
+                                >
+                                — locks the entire function body including the
+                                potentially slow
+                                <code>fetch_fn(key)</code> call. All threads
+                                block while one thread fetches. Defeats the
+                                whole purpose of caching.
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Gemma's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">import</span>
+                                        threading cache = {} lock =
+                                        threading.Lock()
+
+                                        <span class="keyword">def</span>
+                                        <span class="function">get_cached</span
+                                        >(key, fetch_fn):
+                                        <span class="keyword">with</span> lock:
+                                        <span class="comment"
+                                            ># ✗ Locks the entire function</span
+                                        >
+                                        <span class="keyword">if</span> key
+                                        <span class="keyword">not in</span>
+                                        cache: cache[key] = fetch_fn(key)
+                                        <span class="comment"
+                                            ># Slow fetch while locked!</span
+                                        >
+                                        <span class="keyword">return</span>
+                                        cache[key]
+
+                                        <span class="comment"
+                                            ># Problem: all threads block during
+                                            fetch_fn.</span
+                                        >
+                                        <span class="comment"
+                                            ># If fetch takes 5 seconds, every
+                                            thread waits 5s.</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="model-card winner">
+                        <div class="winner-badge">🏆 Winner</div>
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar devstral">D</div>
+                                <div>
+                                    <div class="model-name">Devstral</div>
+                                    <div class="model-meta">~24B params</div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge devstral animate-score"
+                                data-final="10"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Perfect
+                                double-checked locking — checks cache without
+                                lock first (fast path), acquires lock, checks
+                                again, then fetches.<br /><br />
+                                <span class="pro">✓</span> Names the pattern
+                                explicitly (<span class="string"
+                                    >"double-checked locking"</span
+                                >), labels fast path vs critical section.<br /><br />
+                                <span class="pro">✓</span> Structures reasoning
+                                before showing code — ideal for agentic coding
+                                context where you need the model to explain
+                                <em>why</em> it chose a pattern.<br /><br />
+                                <span class="comment"
+                                    >No deductions — clean sweep on this
+                                    test.</span
+                                >
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Devstral's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">import</span>
+                                        threading cache = {} lock =
+                                        threading.Lock()
+
+                                        <span class="keyword">def</span>
+                                        <span class="function">get_cached</span
+                                        >(key, fetch_fn):
+                                        <span class="comment"
+                                            ># Fast path — no lock needed</span
+                                        >
+                                        <span class="keyword">if</span> key
+                                        <span class="keyword">in</span> cache:
+                                        <span class="keyword">return</span>
+                                        cache[key]
+
+                                        <span class="comment"
+                                            ># Critical section — acquire
+                                            lock</span
+                                        >
+                                        <span class="keyword">with</span> lock:
+                                        <span class="comment"
+                                            ># Double-check (another thread may
+                                            have filled it)</span
+                                        >
+                                        <span class="keyword">if</span> key
+                                        <span class="keyword">not in</span>
+                                        cache: cache[key] = fetch_fn(key)
+                                        <span class="keyword">return</span>
+                                        cache[key]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="model-card">
+                        <div class="model-card-header">
+                            <div class="model-info">
+                                <div class="model-avatar codestral">C</div>
+                                <div>
+                                    <div class="model-name">Codestral</div>
+                                    <div class="model-meta">22B params</div>
+                                </div>
+                            </div>
+                            <div
+                                class="score-badge codestral animate-score"
+                                data-final="9"
+                            >
+                                0<span>/10</span>
+                            </div>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="commentary">
+                                <span class="pro">✓</span> Correctly identified
+                                the race condition and correctly implemented
+                                double-checked locking.<br /><br />
+                                <span class="pro">✓</span> Explained why the
+                                double-check is needed after acquiring the lock
+                                — non-trivial reasoning that most smaller models
+                                miss.<br /><br />
+                                <span class="neutral">⚡</span> Solid reasoning
+                                suggests genuine capability, not just pattern
+                                matching. Loses a point only for less structured
+                                explanation compared to Devstral.
+                            </div>
+
+                            <div class="expandable-code">
+                                <button
+                                    class="expand-toggle"
+                                    onclick="toggleCode(this)"
+                                >
+                                    <span>📄 View Codestral's output</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="expand-body">
+                                    <div class="code-body">
+                                        <span class="keyword">import</span>
+                                        threading cache = {} lock =
+                                        threading.Lock()
+
+                                        <span class="keyword">def</span>
+                                        <span class="function">get_cached</span
+                                        >(key, fetch_fn):
+                                        <span class="keyword">if</span> key
+                                        <span class="keyword">in</span> cache:
+                                        <span class="keyword">return</span>
+                                        cache[key]
+                                        <span class="keyword">with</span> lock:
+                                        <span class="keyword">if</span> key
+                                        <span class="keyword">not in</span>
+                                        cache: cache[key] = fetch_fn(key)
+                                        <span class="keyword">return</span>
+                                        cache[key]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <h4>Why Gemma's Fix Loses Its Purpose</h4>
+                        <p>
+                            By locking the entire function body, Gemma's version
+                            makes every thread wait — including during the
+                            potentially slow <code>fetch_fn</code> call. If the
+                            fetch takes 5 seconds, a thousand threads would
+                            queue up serially. The cache's entire benefit
+                            vanishes. Double-checked locking
+                            (Devstral/Codestral) avoids this by making cache
+                            hits fast (no lock) and only serializing the actual
+                            fetch.
+                        </p>
+                    </div>
+                    <div class="detail-item">
+                        <h4>The Clever Explanation Gemma Gave</h4>
+                        <p>
+                            Gemma's Thread A/B walkthrough was genuinely the
+                            clearest of all three models. It walked through each
+                            step: "Thread A checks cache, misses, acquires lock,
+                            fetches. Thread B checks, misses, waits for lock..."
+                            The explanation quality was top-tier — the fix just
+                            didn't match the explanation's precision.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="scorecards">
+            <div class="section-header">
+                <h2>📊 Scoreboard</h2>
+                <p>Aggregated results across all three tests.</p>
+            </div>
+
+            <div class="bar-comparison">
+                <div class="bar-row">
+                    <div
+                        class="bar-label"
+                        style="color: var(--accent-devstral)"
+                    >
+                        Devstral
+                    </div>
+                    <div class="bar-track">
+                        <div
+                            class="bar-fill-anim devstral-bar"
+                            data-width="90%"
+                        >
+                            9.0
+                        </div>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label" style="color: var(--accent-gemma)">
+                        Gemma 4 E4B
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill-anim gemma-bar" data-width="80%">
+                            8.0
+                        </div>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <div
+                        class="bar-label"
+                        style="color: var(--accent-codestral)"
+                    >
+                        Codestral
+                    </div>
+                    <div class="bar-track">
+                        <div
+                            class="bar-fill-anim codestral-bar"
+                            data-width="73%"
+                        >
+                            7.3
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scoreboard">
+                <div class="scorecard devstral fade-in">
+                    <h3>Devstral</h3>
+                    <div class="overall-score animate-score" data-final="9.0">
+                        0
+                    </div>
+                    <div class="overall-label">Average Score</div>
+                    <div class="score-detail">
+                        <span class="label">FIM / YAML</span>
+                        <span
+                            class="value"
+                            style="color: var(--accent-devstral)"
+                            >8/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="score-detail">
+                        <span class="label">Async Refactor</span>
+                        <span
+                            class="value"
+                            style="color: var(--accent-devstral)"
+                            >9/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="score-detail">
+                        <span class="label">Concurrency</span>
+                        <span
+                            class="value"
+                            style="color: var(--accent-devstral)"
+                            >10/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scorecard gemma fade-in">
+                    <h3>Gemma 4 E4B</h3>
+                    <div class="overall-score animate-score" data-final="8.0">
+                        0
+                    </div>
+                    <div class="overall-label">
+                        Average Score (~4.5B params)
+                    </div>
+                    <div class="score-detail">
+                        <span class="label">FIM / YAML</span>
+                        <span class="value" style="color: var(--accent-gemma)"
+                            >9/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="score-detail">
+                        <span class="label">Async Refactor</span>
+                        <span class="value" style="color: var(--accent-gemma)"
+                            >8/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="score-detail">
+                        <span class="label">Concurrency</span>
+                        <span class="value" style="color: var(--accent-gemma)"
+                            >7/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scorecard codestral fade-in">
+                    <h3>Codestral</h3>
+                    <div class="overall-score animate-score" data-final="7.3">
+                        0
+                    </div>
+                    <div class="overall-label">Average Score (22B params)</div>
+                    <div class="score-detail">
+                        <span class="label">FIM / YAML</span>
+                        <span
+                            class="value"
+                            style="color: var(--accent-codestral)"
+                            >7/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div class="score-detail">
+                        <span class="label">Async Refactor</span>
+                        <span
+                            class="value"
+                            style="color: var(--accent-codestral)"
+                            >6/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div class="score-detail">
+                        <span class="label">Concurrency</span>
+                        <span
+                            class="value"
+                            style="color: var(--accent-codestral)"
+                            >9/10</span
+                        >
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin: 60px 0">
+                <h3 style="margin-bottom: 24px; font-size: 20px">
+                    Feature-by-Feature Breakdown
+                </h3>
+                <div class="comparison-table-wrapper">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Capability</th>
+                                <th>Gemma E4B</th>
+                                <th>Devstral</th>
+                                <th>Codestral</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>FIM discipline</strong></td>
+                                <td class="score-cell winner-cell">9 ⭐</td>
+                                <td class="score-cell devstral">8</td>
+                                <td class="score-cell codestral">7</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Edge case detection</strong></td>
+                                <td class="score-cell winner-cell">9 ⭐</td>
+                                <td class="score-cell devstral">7</td>
+                                <td class="score-cell codestral">7</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Async API correctness</strong></td>
+                                <td class="score-cell gemma">8</td>
+                                <td class="score-cell winner-cell devstral">
+                                    9 ⭐
+                                </td>
+                                <td class="score-cell codestral">6</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Exception granularity</strong></td>
+                                <td class="score-cell winner-cell gemma">
+                                    9 ⭐
+                                </td>
+                                <td class="score-cell devstral">8</td>
+                                <td class="score-cell codestral">4</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Code conciseness</strong></td>
+                                <td class="score-cell gemma">6</td>
+                                <td class="score-cell winner-cell devstral">
+                                    9 ⭐
+                                </td>
+                                <td class="score-cell codestral">8</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Concurrency reasoning</strong></td>
+                                <td class="score-cell gemma">8</td>
+                                <td class="score-cell winner-cell devstral">
+                                    10 ⭐
+                                </td>
+                                <td class="score-cell codestral">9</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fix correctness</strong></td>
+                                <td class="score-cell gemma">5</td>
+                                <td class="score-cell winner-cell devstral">
+                                    10 ⭐
+                                </td>
+                                <td class="score-cell codestral">9</td>
+                            </tr>
+                            <tr style="background: var(--bg-tertiary)">
+                                <td><strong>AVERAGE</strong></td>
+                                <td
+                                    class="score-cell gemma"
+                                    style="font-size: 18px"
+                                >
+                                    <strong>8.0</strong>
+                                </td>
+                                <td
+                                    class="score-cell devstral"
+                                    style="font-size: 18px"
+                                >
+                                    <strong>9.0</strong>
+                                </td>
+                                <td
+                                    class="score-cell codestral"
+                                    style="font-size: 18px"
+                                >
+                                    <strong>7.3</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <h3 style="margin-bottom: 24px; font-size: 20px">
+                    Capability Radar
+                </h3>
+                <canvas id="radarChart" width="500" height="500"></canvas>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color gemma"></div>
+                        Gemma E4B
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color devstral"></div>
+                        Devstral
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color codestral"></div>
+                        Codestral
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="ranking fade-in">
+                <h3>🏅 Final Rankings</h3>
+
+                <div class="rank-item">
+                    <div class="rank-number">1</div>
+                    <div class="rank-model">
+                        <div
+                            class="rank-model-name"
+                            style="color: var(--accent-devstral)"
+                        >
+                            Devstral
+                        </div>
+                        <div class="rank-model-desc">
+                            ~24B · Best overall reasoning and production code
+                            quality
+                        </div>
+                    </div>
+                    <div class="rank-score">9.0/10</div>
+                </div>
+
+                <div class="rank-item">
+                    <div class="rank-number">2</div>
+                    <div class="rank-model">
+                        <div
+                            class="rank-model-name"
+                            style="color: var(--accent-gemma)"
+                        >
+                            Gemma 4 E4B
+                        </div>
+                        <div class="rank-model-desc">
+                            ~4.5B effective · Remarkable FIM performance,
+                            size-for-size leader
+                        </div>
+                    </div>
+                    <div class="rank-score">8.0/10</div>
+                </div>
+
+                <div class="rank-item">
+                    <div class="rank-number">3</div>
+                    <div class="rank-model">
+                        <div
+                            class="rank-model-name"
+                            style="color: var(--accent-codestral)"
+                        >
+                            Codestral
+                        </div>
+                        <div class="rank-model-desc">
+                            22B · Strong concurrency, but async API failures and
+                            lazy error handling
+                        </div>
+                    </div>
+                    <div class="rank-score">7.3/10</div>
+                </div>
+
+                <div class="rank-verdict">
+                    <p>
+                        <strong>Devstral</strong> remains the best of the three
+                        for reasoning-heavy coding.
+                        <strong>Gemma E4B</strong> is remarkable for its size —
+                        8/10 average at ~4.5B effective parameters against a
+                        22–24B field is genuinely impressive — but the
+                        concurrency answer reveals it reasons about correctness
+                        less precisely than Devstral. It produces confident,
+                        well-structured, verbose output that
+                        <strong>looks</strong> right more than it
+                        <strong>is</strong> right.
+                        <strong>Codestral's</strong> place is purely
+                        FIM/autocomplete — these tests confirm it.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2>🔍 Key Takeaways</h2>
+            </div>
+
+            <div class="insights">
+                <div class="insight-card fade-in">
+                    <div class="icon-large">⚖️</div>
+                    <h4>Size vs. Reasoning</h4>
+                    <p>
+                        Gemma at ~4.5B effective parameters matching 8/10
+                        against 22–24B models is extraordinary. But when the
+                        task demands precision under pressure (concurrency
+                        fixes), parameter scale still matters. Gemma produced
+                        confident but incorrect fixes — a warning against
+                        trusting verbose code blindly.
+                    </p>
+                </div>
+                <div class="insight-card fade-in">
+                    <div class="icon-large">🎯</div>
+                    <h4>FIM vs. Agentic Tasks</h4>
+                    <p>
+                        Codestral's 95.3% FIM benchmark meant nothing on
+                        reasoning-heavy tasks. Pattern matching ≠ understanding.
+                        If your use case is IDE autocomplete, Codestral is
+                        valid. For agentic refactoring, Devstral is in a
+                        different league.
+                    </p>
+                </div>
+                <div class="insight-card fade-in">
+                    <div class="icon-large">🔬</div>
+                    <h4>Runtime Correctness</h4>
+                    <p>
+                        Codestral's aiohttp timeout bug would crash at runtime.
+                        Gemma's concurrency "fix" would silently degenerate to
+                        serial execution. Devstral was the only model to ship
+                        <em>correct</em> code on every test. Production code
+                        needs Devstral's precision.
+                    </p>
+                </div>
+                <div class="insight-card fade-in">
+                    <div class="icon-large">⚡</div>
+                    <h4>Conciseness Is a Proxy for Understanding</h4>
+                    <p>
+                        Devstral consistently got more done with less code.
+                        Gemma's over-engineering (unnecessary constants, demo
+                        functions, unnecessary async decorators) signals it's
+                        compensating for uncertainty with volume. Devstral's
+                        tighter answers signal genuine understanding.
+                    </p>
+                </div>
+                <div class="insight-card fade-in">
+                    <div class="icon-large">🧪</div>
+                    <h4>Edge Case Sensitivity</h4>
+                    <p>
+                        Gemma was the only model to handle the case where
+                        <code>yaml.safe_load</code> returns <code>None</code>.
+                        This is the kind of defensive programming that prevents
+                        production outages. Devstral missed it here but
+                        compensated with broader async correctness.
+                    </p>
+                </div>
+                <div class="insight-card fade-in">
+                    <div class="icon-large">✅</div>
+                    <h4>The Verdict on Tool Choice</h4>
+                    <p>
+                        For <strong>production agentic coding</strong>:
+                        Devstral. For <strong>IDE autocomplete/FIM</strong>:
+                        Codestral. For
+                        <strong>edge-case detection in small model</strong>:
+                        Gemma E4B (but always test its output — confidence ≠
+                        correctness).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="verdict">
+            <div class="verdict-section fade-in">
+                <h2>The Real Answer</h2>
+                <p>
+                    No model is perfect. But
+                    <span class="highlight">Devstral</span> is the only one in
+                    this set that delivers
+                    <span class="highlight"
+                        >correct reasoning + working code</span
+                    >
+                    consistently. Gemma punches well above its weight at ~4.5B
+                    parameters, but its concurrency fix demonstrates that
+                    confidence can mask incorrectness. Codestral is a specialist
+                    — great at autocomplete, unreliable at reasoning.
+                </p>
+
+                <div class="model-recommendations">
+                    <div class="model-rec devstral-rec">
+                        <h4 style="color: var(--accent-devstral)">
+                            Devstral — Primary
+                        </h4>
+                        <div class="rec-type">
+                            Best for: Agentic coding, refactoring, async logic
+                        </div>
+                        <p>
+                            Use Devstral when you need code that works the first
+                            time. Its reasoning precision on concurrency and
+                            async correctness makes it the safest choice for
+                            production systems.
+                        </p>
+                    </div>
+                    <div class="model-rec gemma-rec">
+                        <h4 style="color: var(--accent-gemma)">
+                            Gemma E4B — Watchlist
+                        </h4>
+                        <div class="rec-type">
+                            Best for: FIM, edge-case detection, low-resource
+                            deployment
+                        </div>
+                        <p>
+                            Remarkable efficiency. Ideal where you need
+                            good-but-not-perfect code with minimal parameters.
+                            Always code-review or test Gemma's output — its
+                            verbosity can mask logic errors.
+                        </p>
+                    </div>
+                    <div class="model-rec codestral-rec">
+                        <h4 style="color: var(--accent-codestral)">
+                            Codestral — Specialist
+                        </h4>
+                        <div class="rec-type">
+                            Best for: IDE autocomplete, FIM completion, pattern
+                            matching
+                        </div>
+                        <p>
+                            Trust Codestral for fill-in-middle tasks and
+                            architectural scaffolding. Don't trust it for async
+                            correctness, error handling, or any task requiring
+                            runtime precision.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>
+                Evaluation data sourced from unbiased review by Claude Sonnet
+                4.6 · Demo built for transparent model comparison
+            </p>
+            <p style="margin-top: 8px; color: var(--border-active)">
+                Gemma™ is a Google model · Devstral · Codestral™ is a Mistral AI
+                model · All evaluations are independent
+            </p>
+        </footer>
+
+        <script src="script.js" defer></script>
+    </body>
+</html>
