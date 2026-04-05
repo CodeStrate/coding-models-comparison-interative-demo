@@ -1,116 +1,124 @@
-// Tab switching logic
-document.querySelectorAll(".test-tab").forEach((tab) => {
-  tab.addEventListener("click", () => {
-    document
-      .querySelectorAll(".test-tab")
-      .forEach((t) => t.classList.remove("active"));
-    document
-      .querySelectorAll(".test-content")
-      .forEach((c) => c.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById(tab.dataset.tab).classList.add("active");
-  });
-});
-
-// Animated score counters
-function animateScores() {
-  document.querySelectorAll(".animate-score").forEach((el) => {
-    const target = parseFloat(el.dataset.final);
-    if (!target) return;
-    let current = 0;
-    const step = target / 40;
-    const interval = setInterval(() => {
-      current += step;
-      if (current >= target) {
-        current = target;
-        clearInterval(interval);
-      }
-      // Preserve child nodes (e.g. <span>/10</span>) — only update first text node
-      const firstText = [...el.childNodes].find((n) => n.nodeType === 3);
-      if (firstText) {
-        firstText.textContent = current % 1 === 0 ? current : current.toFixed(1);
-      } else {
-        el.textContent = current % 1 === 0 ? current : current.toFixed(1);
-      }
+// ── Leaderboard row toggle ──
+function toggleRow(el, id) {
+  const bars = document.getElementById('bars-' + id);
+  const isOpen = bars.classList.contains('visible');
+  document.querySelectorAll('.lb-bars').forEach(b => b.classList.remove('visible'));
+  document.querySelectorAll('.lb-row').forEach(r => r.classList.remove('open'));
+  if (!isOpen) {
+    bars.classList.add('visible');
+    el.classList.add('open');
+    setTimeout(() => {
+      bars.querySelectorAll('.bar-fill').forEach(fill => {
+        fill.style.width = fill.getAttribute('data-w') + '%';
+      });
     }, 30);
-  });
+  }
 }
 
-// Intersection Observer for fade-in animations
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
-    });
-  },
-  { threshold: 0.1 },
-);
+// ── Task tabs ──
+function switchTask(idx) {
+  document.querySelectorAll('.task-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  document.querySelectorAll('.task-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+}
 
-document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
+// ── Code modal open / close ──
+function openCodeModal(taskId) {
+  const modal = document.getElementById('code-modal-' + taskId);
+  if (modal) {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
 
-// Nav link active state toggle
-document.querySelectorAll(".nav-links a").forEach((link) => {
-  link.addEventListener("click", function () {
-    document
-      .querySelectorAll(".nav-links a")
-      .forEach((l) => l.classList.remove("active"));
-    this.classList.add("active");
-  });
+function openThinkModal(taskId) {
+  const modal = document.getElementById('think-modal-' + taskId);
+  if (modal) {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+// Close on backdrop click
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('bm-modal')) {
+    e.target.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 });
 
-// Smooth scrolling mechanism
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-  anchor.addEventListener("click", function (e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute("href"));
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+// Close on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.bm-modal.open').forEach(m => {
+      m.classList.remove('open');
+    });
+    document.body.style.overflow = '';
+  }
+});
+
+// ── Modal tab switching ──
+document.addEventListener('click', (e) => {
+  const tab = e.target.closest('.bm-modal-tab');
+  if (!tab) return;
+  const modal = tab.closest('.bm-modal-inner');
+  if (!modal) return;
+  const paneId = tab.dataset.pane;
+  modal.querySelectorAll('.bm-modal-tab').forEach(t => t.classList.remove('active'));
+  modal.querySelectorAll('.bm-pane').forEach(p => p.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById(paneId)?.classList.add('active');
+});
+
+// ── Model logos ──
+document.addEventListener('DOMContentLoaded', () => {
+  const logoMap = {
+    'mc-osshigh':  ['logo-openai',  'OAI'],
+    'mc-ossmed':   ['logo-openai',  'OAI'],
+    'mc-osslow':   ['logo-openai',  'OAI'],
+    'mc-gemma':    ['logo-google',  'G'],
+    'mc-devstral': ['logo-mistral', 'M'],
+    'mc-codestral':['logo-mistral', 'M'],
+    'mc-lfm2':     ['logo-liquid',  'LQ'],
+  };
+  document.querySelectorAll('.model-card').forEach(card => {
+    for (const [cls, [logoCls, label]] of Object.entries(logoMap)) {
+      if (!card.classList.contains(cls)) continue;
+      const header = card.querySelector('.mc-header');
+      const name = header.querySelector('.mc-name');
+      const logo = document.createElement('span');
+      logo.className = `mc-logo ${logoCls}`;
+      logo.textContent = label;
+      header.insertBefore(logo, name);
+      break;
     }
   });
 });
 
-// Modal tab switching
-document.querySelectorAll(".cm-tab").forEach((tab) => {
-  tab.addEventListener("click", () => {
-    const paneId = tab.dataset.pane;
-    const inner = tab.closest(".code-modal-inner");
-    inner.querySelectorAll(".cm-tab").forEach((t) => t.classList.remove("active"));
-    inner.querySelectorAll(".cm-pane").forEach((p) => p.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById(paneId).classList.add("active");
-  });
-});
-
-// Code modal open / close
-function openCodeModal(id) {
-  document.getElementById("modal-" + id).classList.add("open");
-  document.body.style.overflow = "hidden";
-}
-
-function closeCodeModal(id) {
-  document.getElementById("modal-" + id).classList.remove("open");
-  document.body.style.overflow = "";
-}
-
-function handleModalBackdropClick(event) {
-  if (event.target === event.currentTarget) {
-    event.currentTarget.classList.remove("open");
-    document.body.style.overflow = "";
-  }
-}
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    document.querySelectorAll(".code-modal.open").forEach((m) => {
-      m.classList.remove("open");
+// ── Animate OSS bars on load ──
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.oss-bar-fill').forEach(f => {
+      f.style.width = (f.getAttribute('data-w') || 0) + '%';
     });
-    document.body.style.overflow = "";
-  }
+  }, 300);
 });
 
-// Initialization
-document.addEventListener("DOMContentLoaded", () => {
-  animateScores();
+// ── Intersection observer for fade-up ──
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.style.animationPlayState = 'running';
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => {
+  el.style.animationPlayState = 'paused';
+  obs.observe(el);
 });
