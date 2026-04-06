@@ -258,7 +258,15 @@
     <div class="oss-card">
       <div class="oss-mode" style="color:var(--gold)">Low Reasoning</div>
       <div class="oss-score">7.8</div>
-      <div class="oss-note">Surprisingly solid. <strong>Pathlib + full error handling on T1.</strong> Off-by-one on retry count in T5 — re-raises one attempt too early. T4 lacks distributed Redis lock, uses asyncio.Lock only. Fast and usable.</div>
+      <div class="oss-note">
+        <strong>Surprisingly solid for lowest compute tier.</strong>
+        <ul class="oss-bullets">
+          <li>T1: pathlib + full error handling — best instinct in this tier</li>
+          <li>T5: off-by-one — re-raises one attempt too early</li>
+          <li>T4: asyncio.Lock only — no distributed Redis lock</li>
+          <li>Fastest iteration, acceptable for low-stakes tasks</li>
+        </ul>
+      </div>
       <div class="oss-bar-row"><div class="oss-bar-lbl">Score</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="78"></div></div></div>
       <div class="oss-bar-row"><div class="oss-bar-lbl">Speed</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="38" style="background:var(--tx3)"></div></div></div>
       <div style="font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--tx3);margin-top:.3rem">32–40 t/s on M5 MBP</div>
@@ -266,7 +274,15 @@
     <div class="oss-card">
       <div class="oss-mode" style="color:var(--cyan)">Medium Reasoning</div>
       <div class="oss-score">9.0</div>
-      <div class="oss-note"><strong>Best deliverable score in the benchmark.</strong> T3 gives three distinct solutions with trade-off analysis. T5 explicitly sets <code>__signature__</code> and <code>__annotations__</code>, tests with <code>inspect.signature()</code>, supports both <code>@retry</code> and <code>@retry()</code>. One minor aioredis API version mismatch in T4 — only real fault.</div>
+      <div class="oss-note">
+        <strong>Best deliverable score in the benchmark.</strong>
+        <ul class="oss-bullets">
+          <li>T3: three distinct caching solutions with trade-off analysis</li>
+          <li>T5: explicit <code>__signature__</code> + <code>__annotations__</code>, both decorator call forms, <code>@overload</code> stubs</li>
+          <li>T4: one aioredis API version mismatch — only real fault in the set</li>
+          <li>Sweet spot — enough budget to reason, not enough to spiral</li>
+        </ul>
+      </div>
       <div class="oss-bar-row"><div class="oss-bar-lbl">Score</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="90"></div></div></div>
       <div class="oss-bar-row"><div class="oss-bar-lbl">Speed</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="38" style="background:var(--tx3)"></div></div></div>
       <div style="font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--tx3);margin-top:.3rem">32–40 t/s on M5 MBP</div>
@@ -274,7 +290,15 @@
     <div class="oss-card">
       <div class="oss-mode">High Reasoning * Ghost Ranking</div>
       <div class="oss-score" style="background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">9.2*</div>
-      <div class="oss-note"><strong>Hypothetical #1 — trapped in thinking on T4 (original run), T5 scored separately.</strong> T2 was a perfect 10 — 4 clean helpers, full type annotations, <code>raise_for_status</code>. T3 produced 3 solutions including per-key locking with trade-off analysis. The reasoning quality is the best in this set. The failure mode is overthinking, not lack of knowledge. Same weights as Medium. Same speed. Different result.</div>
+      <div class="oss-note">
+        <strong>Best reasoning in the set. Same weights as Medium. Different result.</strong>
+        <ul class="oss-bullets">
+          <li>T2: perfect 10 — 4 helpers, full NumPy docs, correct <code>ClientTimeout</code></li>
+          <li>T3: 3 solutions including per-key locking with explicit trade-off analysis</li>
+          <li>T4: thinking spiralled — no deliverable committed in original run</li>
+          <li>Failure mode is overthinking, not lack of knowledge</li>
+        </ul>
+      </div>
       <div class="oss-bar-row"><div class="oss-bar-lbl">Score</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="92" style="background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div></div>
       <div class="oss-bar-row"><div class="oss-bar-lbl">Speed</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="38" style="background:var(--tx3)"></div></div></div>
       <div style="font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--cyan);margin-top:.3rem">* projected — T4+T5 not completed in original run</div>
@@ -286,12 +310,14 @@
 <section class="breakdown-section fade-up">
   <div class="section-label">Task-by-Task Analysis</div>
 
-  <div class="task-nav">
-    <button class="task-btn active" onclick="switchTask(0)">T1 · FIM YAML</button>
-    <button class="task-btn" onclick="switchTask(1)">T2 · Async Refactor</button>
-    <button class="task-btn" onclick="switchTask(2)">T3 · Race Condition</button>
-    <button class="task-btn" onclick="switchTask(3)">T4 · JobScheduler</button>
-    <button class="task-btn" onclick="switchTask(4)">T5 · Retry Decorator</button>
+  <div class="task-nav-wrap">
+    <div class="task-nav">
+      <button class="task-btn active" onclick="switchTask(0)">T1 · FIM YAML</button>
+      <button class="task-btn" onclick="switchTask(1)">T2 · Async Refactor</button>
+      <button class="task-btn" onclick="switchTask(2)">T3 · Race Condition</button>
+      <button class="task-btn" onclick="switchTask(3)">T4 · JobScheduler</button>
+      <button class="task-btn" onclick="switchTask(4)">T5 · Retry Decorator</button>
+    </div>
   </div>
 
   <!-- T1 -->

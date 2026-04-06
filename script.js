@@ -77,6 +77,20 @@ document.addEventListener('click', (e) => {
   document.getElementById(paneId)?.classList.add('active');
 });
 
+// ── Leaderboard keyboard accessibility ──
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.lb-row').forEach(row => {
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        row.click();
+      }
+    });
+  });
+});
+
 // ── Model logos ──
 document.addEventListener('DOMContentLoaded', () => {
   const logoMap = {
