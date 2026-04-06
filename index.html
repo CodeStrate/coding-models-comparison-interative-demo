@@ -792,6 +792,93 @@
   </div>
 </section>
 
+<!-- AGENTIC RANKING -->
+<section class="agentic-section fade-up">
+  <div class="section-label">Agentic Loop — Bug Fix Session</div>
+  <div class="agentic-intro">
+    <p>Same bug, three models, one harness — <strong>OpenCode</strong>. The task was a real async job queue bug: retried jobs showed status <code>running</code> after <code>wait_for_completion</code> returned. All three diagnosed the root cause correctly. What separated them was everything after the diagnosis.</p>
+    <p class="ag-caveat">* OpenCode defaults to GPT OSS 20B as one of its primary LM Studio models — this gave OSS Medium a native advantage in tool call formatting and harness familiarity that Gemma and Devstral don't have. Factor accordingly.</p>
+  </div>
+
+  <div class="agentic-ranking">
+
+    <div class="ag-row ag-first">
+      <div class="ag-rank-col">
+        <div class="ag-rank">#1</div>
+        <div class="ag-rank-bar" style="background:var(--cyan)"></div>
+      </div>
+      <div class="ag-body">
+        <div class="ag-header">
+          <div class="ag-name">GPT OSS 20B · Medium</div>
+          <div class="ag-verdict-pill">Closed the loop</div>
+        </div>
+        <div class="ag-score-row">
+          <span class="ag-chip chip-good">Diagnosis ✓</span>
+          <span class="ag-chip chip-warn">Hallucinated output — caught</span>
+          <span class="ag-chip chip-good">Self-corrected</span>
+          <span class="ag-chip chip-good">Fix shipped</span>
+          <span class="ag-chip chip-good">Verified working</span>
+        </div>
+        <div class="ag-text">
+          The only model to complete the task end to end. When the first test returned ambiguous output, it fabricated a clean result rather than reporting what it actually saw. Pushed back on, it ran the debug script for real, acknowledged the discrepancy, and reasoned through the exact failure mechanism in its thinking block: <code>_delayed_requeue</code> tasks are fire-and-forget — they put the job back in the queue after a sleep, but <code>wait_for_completion</code> calls <code>queue.join()</code> before those tasks have had a chance to re-enqueue, meaning the sentinel goes out while retried jobs are still pending. Correct diagnosis, correct fix, working verification. The hallucination is a mark against it — but catching it and correcting it is still agentic behavior working as intended. That's the full loop.
+        </div>
+      </div>
+    </div>
+
+    <div class="ag-row ag-second">
+      <div class="ag-rank-col">
+        <div class="ag-rank">#2</div>
+        <div class="ag-rank-bar" style="background:var(--green)"></div>
+      </div>
+      <div class="ag-body">
+        <div class="ag-header">
+          <div class="ag-name">Gemma 4 E4B</div>
+          <div class="ag-verdict-pill">Tooling friction, not reasoning failure</div>
+        </div>
+        <div class="ag-score-row">
+          <span class="ag-chip chip-good">Diagnosis ✓ — first read</span>
+          <span class="ag-chip chip-good">No hallucinations</span>
+          <span class="ag-chip chip-bad">IndentationError — stuck in loop</span>
+          <span class="ag-chip chip-warn">No verification run</span>
+        </div>
+        <div class="ag-text">
+          Correctly identified the bug on first read. Immediately attempted an edit — and introduced an <code>IndentationError</code> via incorrect whitespace in the <code>newString</code>. Three subsequent recovery attempts all failed with "could not find oldString" because the broken file no longer matched any expected context string. The reasoning never went wrong. It knew exactly what to change and why. The failure was mechanical: edit tool precision, and an inability to adapt strategy — reading the file, trying a write, pivoting to a different approach — when the same pattern kept failing. Gemma isn't natively trained on agentic harness conventions. Given it found the root cause on first read without any agentic fine-tuning, this is a respectable result with a clear ceiling to remove.
+        </div>
+      </div>
+    </div>
+
+    <div class="ag-row ag-third">
+      <div class="ag-rank-col">
+        <div class="ag-rank">#3</div>
+        <div class="ag-rank-bar" style="background:var(--violet)"></div>
+      </div>
+      <div class="ag-body">
+        <div class="ag-header">
+          <div class="ag-name">Devstral Small</div>
+          <div class="ag-verdict-pill">Stopped iterating</div>
+        </div>
+        <div class="ag-score-row">
+          <span class="ag-chip chip-good">Diagnosis ✓</span>
+          <span class="ag-chip chip-good">No hallucinations</span>
+          <span class="ag-chip chip-good">First edit succeeded</span>
+          <span class="ag-chip chip-bad">Bug still present after fix</span>
+          <span class="ag-chip chip-bad">Did not re-engage</span>
+        </div>
+        <div class="ag-text">
+          The static benchmark had Devstral tied with Gemma at 8.2. Agentic context separates them clearly. Devstral made a clean first edit — no syntax errors, no tooling friction — ran verification, and observed the bug still present: 3 jobs stuck at <code>running</code> post-completion. Then it effectively stopped. It attempted a grep, fumbled a Python one-liner invocation, and didn't re-engage when the session stayed open. The distinction from Gemma matters: Devstral had a working tool environment and still didn't close the loop. Gemma was blocked by harness friction. The failure mode here is iteration, not tooling — and that's a harder thing to explain away.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ag-footnote">
+    <span class="ag-fn-label">Context</span>
+    OSS High also ran — tasked with diagnosing the residual 3-job failure that OSS Medium surfaced. It produced the most detailed reasoning of any session on the root cause but, true to form, did not deliver a complete fix. The ranking above covers the primary three-model comparison only.
+  </div>
+
+</section>
+
 <footer>
   <div class="footer-left">
     <span>Local LLM Benchmark · Apple M5 MBP 14" · 24GB Unified Memory · MLX Backend</span>
