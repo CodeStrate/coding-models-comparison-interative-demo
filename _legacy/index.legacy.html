@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local LLM Coding Benchmark — April 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Epilogue:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<header class="fade-up">
+  <div class="header-socials">
+    <a href="https://linkedin.com/in/hardikcs" target="_blank" rel="noopener" class="header-social-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      /in/hardikcs
+    </a>
+    <a href="https://github.com/CodeStrate" target="_blank" rel="noopener" class="header-social-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+      CodeStrate
+    </a>
+  </div>
+  <div class="eyebrow">Local LLM Benchmark — Apple Silicon</div>
+  <h1>5 Models.<br><em>Zero Mercy.</em></h1>
+  <div class="meta-row">
+    <span><span class="meta-dot"></span>April 2026</span>
+    <span><span class="meta-dot"></span>5 Tasks</span>
+    <span><span class="meta-dot"></span>6 Entries · 1 DNF · 1 Ghost</span>
+    <span><span class="meta-dot"></span>LM Studio 0.4.9</span>
+    <span><span class="meta-dot"></span>M5 MBP 14" · 24GB</span>
+  </div>
+</header>
+
+<!-- CRITERIA -->
+<section class="criteria-section fade-up">
+  <div class="section-label">Scoring Criteria</div>
+  <div class="criteria-strip">
+    <div class="criterion">
+      <div class="crit-name">Correctness</div>
+      <div class="crit-desc">Runs without errors. No wrong API calls, no hallucinated attributes, no silent crashes.</div>
+      <div class="crit-weight">↑ highest weight</div>
+    </div>
+    <div class="criterion">
+      <div class="crit-name">Concurrency</div>
+      <div class="crit-desc">Proper locking semantics. Double-checked locking where applicable. No race conditions.</div>
+      <div class="crit-weight">↑ high weight</div>
+    </div>
+    <div class="criterion">
+      <div class="crit-name">API Accuracy</div>
+      <div class="crit-desc">Correct library usage. Right timeouts, right method signatures, right exception types.</div>
+      <div class="crit-weight">↑ high weight</div>
+    </div>
+    <div class="criterion">
+      <div class="crit-name">Reasoning Depth</div>
+      <div class="crit-desc">Does the model understand <em>why</em> the code works, not just what to write?</div>
+      <div class="crit-weight">↑ medium weight</div>
+    </div>
+    <div class="criterion">
+      <div class="crit-name">Completeness</div>
+      <div class="crit-desc">All requirements addressed. No glossed-over edge cases. No "TODO: add this".</div>
+      <div class="crit-weight">↑ medium weight</div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="lb-section fade-up">
+  <div class="section-label">Overall Rankings</div>
+  <div class="leaderboard">
+
+    <!-- OSS HIGH — GHOST -->
+    <div class="lb-row ghost" data-r="1" onclick="toggleRow(this,'oss-high')">
+      <div class="lb-main">
+        <div class="lb-rank">#*</div>
+        <div class="lb-info">
+          <div class="lb-name">GPT OSS 20B <span class="badge badge-ghost">High Think</span><span class="badge badge-ghost">* Hypothetical</span><span class="badge badge-violet">MoE · MXFP4</span></div>
+          <div class="lb-id">openai/gpt-oss-20b · high reasoning · T4 spiralled · T5 separate run</div>
+        </div>
+        <div class="lb-score-block">
+          <div class="lb-score ghost-score">9.2</div>
+          <div class="lb-score-sub">projected / 10</div>
+        </div>
+      </div>
+      <div class="lb-bars" id="bars-oss-high">
+        <div class="bar-item"><div class="bar-lbl">T1 FIM</div><div class="bar-track"><div class="bar-fill" style="background:var(--cyan)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T2 Async</div><div class="bar-track"><div class="bar-fill" style="background:var(--cyan)" data-w="100"></div></div><div class="bar-val">10/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T3 Cache</div><div class="bar-track"><div class="bar-fill" style="background:var(--cyan)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T4 Sched</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="0"></div></div><div class="bar-val" style="color:var(--red)">DNF</div></div>
+        <div class="bar-item"><div class="bar-lbl">T5 Retry</div><div class="bar-track"><div class="bar-fill" style="background:var(--tx3)" data-w="90"></div></div><div class="bar-val">9*</div></div>
+      </div>
+      <div class="ghost-note">* projected — T4 thinking block spiralled (no deliverable in original run); T5 scored from separate run. <em>Would be hypothetical #1 at 9.2 avg.</em> The reasoning is some of the best in this set — the failure mode is overthinking, not lack of knowledge.</div>
+    </div>
+
+    <!-- OSS HIGH — REAL (DNF) -->
+    <div class="lb-row dnf" data-r="dnf" onclick="toggleRow(this,'oss-high-dnf')">
+      <div class="lb-main">
+        <div class="lb-rank">DNF</div>
+        <div class="lb-info">
+          <div class="lb-name">GPT OSS 20B <span class="badge badge-red">High Think</span><span class="badge badge-dnf">T4 Spiralled</span><span class="badge badge-violet">MoE · MXFP4</span></div>
+          <div class="lb-id">openai/gpt-oss-20b · high reasoning · T4 overthought with no deliverable — disqualified from rankings</div>
+        </div>
+        <div class="lb-score-block">
+          <div class="lb-score" style="color:var(--red)">—</div>
+          <div class="lb-score-sub">did not finish</div>
+        </div>
+      </div>
+      <div class="lb-bars" id="bars-oss-high-dnf">
+        <div class="bar-item"><div class="bar-lbl">T1 FIM</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T2 Async</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="100"></div></div><div class="bar-val">10/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T3 Cache</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T4 Sched</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="0"></div></div><div class="bar-val" style="color:var(--red)">DNF</div></div>
+        <div class="bar-item"><div class="bar-lbl">T5 Retry</div><div class="bar-track"><div class="bar-fill" style="background:var(--tx4)" data-w="0"></div></div><div class="bar-val" style="color:var(--tx4)">N/A</div></div>
+      </div>
+    </div>
+
+    <!-- OSS MEDIUM -->
+    <div class="lb-row" data-r="1" onclick="toggleRow(this,'oss-med')">
+      <div class="lb-main">
+        <div class="lb-rank">#1</div>
+        <div class="lb-info">
+          <div class="lb-name">GPT OSS 20B <span class="badge badge-cyan">Medium Think</span><span class="badge badge-violet">MoE · MXFP4</span></div>
+          <div class="lb-id">openai/gpt-oss-20b · medium reasoning</div>
+        </div>
+        <div class="lb-score-block">
+          <div class="lb-score">9.0</div>
+          <div class="lb-score-sub">avg / 10</div>
+        </div>
+      </div>
+      <div class="lb-bars" id="bars-oss-med">
+        <div class="bar-item"><div class="bar-lbl">T1 FIM</div><div class="bar-track"><div class="bar-fill" style="background:var(--cyan)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T2 Async</div><div class="bar-track"><div class="bar-fill" style="background:var(--cyan)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T3 Cache</div><div class="bar-track"><div class="bar-fill" style="background:var(--cyan)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T4 Sched</div><div class="bar-track"><div class="bar-fill" style="background:var(--cyan)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T5 Retry</div><div class="bar-track"><div class="bar-fill" style="background:var(--cyan)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+      </div>
+    </div>
+
+    <!-- DEVSTRAL -->
+    <div class="lb-row" data-r="2" onclick="toggleRow(this,'devstral')">
+      <div class="lb-main">
+        <div class="lb-rank">#2</div>
+        <div class="lb-info">
+          <div class="lb-name">Devstral Small <span class="badge badge-violet">Best Dense</span></div>
+          <div class="lb-id">mistralai/devstral-small-2-2512</div>
+        </div>
+        <div class="lb-score-block">
+          <div class="lb-score">8.2</div>
+          <div class="lb-score-sub">avg / 10</div>
+        </div>
+      </div>
+      <div class="lb-bars" id="bars-devstral">
+        <div class="bar-item"><div class="bar-lbl">T1 FIM</div><div class="bar-track"><div class="bar-fill" style="background:var(--violet)" data-w="80"></div></div><div class="bar-val">8/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T2 Async</div><div class="bar-track"><div class="bar-fill" style="background:var(--violet)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T3 Cache</div><div class="bar-track"><div class="bar-fill" style="background:var(--violet)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T4 Sched</div><div class="bar-track"><div class="bar-fill" style="background:var(--violet)" data-w="80"></div></div><div class="bar-val">8/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T5 Retry</div><div class="bar-track"><div class="bar-fill" style="background:var(--violet)" data-w="70"></div></div><div class="bar-val">7/10</div></div>
+      </div>
+    </div>
+
+    <!-- GEMMA -->
+    <div class="lb-row" data-r="2" onclick="toggleRow(this,'gemma')">
+      <div class="lb-main">
+        <div class="lb-rank">#2</div>
+        <div class="lb-info">
+          <div class="lb-name">Gemma 4 E4B <span class="badge badge-green">Best for Size</span></div>
+          <div class="lb-id">gemma-4-e4b-it</div>
+        </div>
+        <div class="lb-score-block">
+          <div class="lb-score">8.2</div>
+          <div class="lb-score-sub">avg / 10</div>
+        </div>
+      </div>
+      <div class="lb-bars" id="bars-gemma">
+        <div class="bar-item"><div class="bar-lbl">T1 FIM</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T2 Async</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T3 Cache</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="60"></div></div><div class="bar-val">6/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T4 Sched</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T5 Retry</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="80"></div></div><div class="bar-val">8/10</div></div>
+      </div>
+    </div>
+
+    <!-- OSS LOW -->
+    <div class="lb-row" data-r="4" onclick="toggleRow(this,'oss-low')">
+      <div class="lb-main">
+        <div class="lb-rank">#4</div>
+        <div class="lb-info">
+          <div class="lb-name">GPT OSS 20B <span class="badge badge-gold">Low Think</span><span class="badge badge-violet">MoE · MXFP4</span></div>
+          <div class="lb-id">openai/gpt-oss-20b · low reasoning</div>
+        </div>
+        <div class="lb-score-block">
+          <div class="lb-score">7.8</div>
+          <div class="lb-score-sub">avg / 10</div>
+        </div>
+      </div>
+      <div class="lb-bars" id="bars-oss-low">
+        <div class="bar-item"><div class="bar-lbl">T1 FIM</div><div class="bar-track"><div class="bar-fill" style="background:var(--gold)" data-w="90"></div></div><div class="bar-val">9/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T2 Async</div><div class="bar-track"><div class="bar-fill" style="background:var(--gold)" data-w="80"></div></div><div class="bar-val">8/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T3 Cache</div><div class="bar-track"><div class="bar-fill" style="background:var(--gold)" data-w="80"></div></div><div class="bar-val">8/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T4 Sched</div><div class="bar-track"><div class="bar-fill" style="background:var(--gold)" data-w="70"></div></div><div class="bar-val">7/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T5 Retry</div><div class="bar-track"><div class="bar-fill" style="background:var(--gold)" data-w="70"></div></div><div class="bar-val">7/10</div></div>
+      </div>
+    </div>
+
+    <!-- CODESTRAL -->
+    <div class="lb-row" data-r="5" onclick="toggleRow(this,'codestral')">
+      <div class="lb-main">
+        <div class="lb-rank">#5</div>
+        <div class="lb-info">
+          <div class="lb-name">Codestral 22B <span class="badge badge-orange">FIM Specialist</span></div>
+          <div class="lb-id">codestral-22b-yui-mlx</div>
+        </div>
+        <div class="lb-score-block">
+          <div class="lb-score">6.0</div>
+          <div class="lb-score-sub">avg / 10</div>
+        </div>
+      </div>
+      <div class="lb-bars" id="bars-codestral">
+        <div class="bar-item"><div class="bar-lbl">T1 FIM</div><div class="bar-track"><div class="bar-fill" style="background:var(--orange)" data-w="70"></div></div><div class="bar-val">7/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T2 Async</div><div class="bar-track"><div class="bar-fill" style="background:var(--orange)" data-w="50"></div></div><div class="bar-val">5/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T3 Cache</div><div class="bar-track"><div class="bar-fill" style="background:var(--orange)" data-w="80"></div></div><div class="bar-val">8/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T4 Sched</div><div class="bar-track"><div class="bar-fill" style="background:var(--orange)" data-w="40"></div></div><div class="bar-val">4/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T5 Retry</div><div class="bar-track"><div class="bar-fill" style="background:var(--orange)" data-w="60"></div></div><div class="bar-val">6/10</div></div>
+      </div>
+    </div>
+
+    <!-- LFM2 -->
+    <div class="lb-row" data-r="6" onclick="toggleRow(this,'lfm2')">
+      <div class="lb-main">
+        <div class="lb-rank">#6</div>
+        <div class="lb-info">
+          <div class="lb-name">LFM2 24B A2B <span class="badge badge-red">Speed Only</span></div>
+          <div class="lb-id">liquid/lfm2-24b-a2b · 72–75 t/s</div>
+        </div>
+        <div class="lb-score-block">
+          <div class="lb-score">3.4</div>
+          <div class="lb-score-sub">avg / 10</div>
+        </div>
+      </div>
+      <div class="lb-bars" id="bars-lfm2">
+        <div class="bar-item"><div class="bar-lbl">T1 FIM</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="30"></div></div><div class="bar-val">3/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T2 Async</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="50"></div></div><div class="bar-val">5/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T3 Cache</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="30"></div></div><div class="bar-val">3/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T4 Sched</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="30"></div></div><div class="bar-val">3/10</div></div>
+        <div class="bar-item"><div class="bar-lbl">T5 Retry</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="30"></div></div><div class="bar-val">3/10</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- OSS SPOTLIGHT -->
+<section class="oss-section fade-up">
+  <div class="section-label">GPT OSS 20B — Reasoning Mode Breakdown</div>
+  <div class="oss-grid">
+    <div class="oss-card">
+      <div class="oss-mode" style="color:var(--gold)">Low Reasoning</div>
+      <div class="oss-score">7.8</div>
+      <div class="oss-note">
+        <strong>Surprisingly solid for lowest compute tier.</strong>
+        <ul class="oss-bullets">
+          <li>T1: pathlib + full error handling — best instinct in this tier</li>
+          <li>T5: off-by-one — re-raises one attempt too early</li>
+          <li>T4: asyncio.Lock only — no distributed Redis lock</li>
+          <li>Fastest iteration, acceptable for low-stakes tasks</li>
+        </ul>
+      </div>
+      <div class="oss-bar-row"><div class="oss-bar-lbl">Score</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="78"></div></div></div>
+      <div class="oss-bar-row"><div class="oss-bar-lbl">Speed</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="38" style="background:var(--tx3)"></div></div></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--tx3);margin-top:.3rem">32–40 t/s on M5 MBP</div>
+    </div>
+    <div class="oss-card">
+      <div class="oss-mode" style="color:var(--cyan)">Medium Reasoning</div>
+      <div class="oss-score">9.0</div>
+      <div class="oss-note">
+        <strong>Best deliverable score in the benchmark.</strong>
+        <ul class="oss-bullets">
+          <li>T3: three distinct caching solutions with trade-off analysis</li>
+          <li>T5: explicit <code>__signature__</code> + <code>__annotations__</code>, both decorator call forms, <code>@overload</code> stubs</li>
+          <li>T4: one aioredis API version mismatch — only real fault in the set</li>
+          <li>Sweet spot — enough budget to reason, not enough to spiral</li>
+        </ul>
+      </div>
+      <div class="oss-bar-row"><div class="oss-bar-lbl">Score</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="90"></div></div></div>
+      <div class="oss-bar-row"><div class="oss-bar-lbl">Speed</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="38" style="background:var(--tx3)"></div></div></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--tx3);margin-top:.3rem">32–40 t/s on M5 MBP</div>
+    </div>
+    <div class="oss-card">
+      <div class="oss-mode">High Reasoning * Ghost Ranking</div>
+      <div class="oss-score" style="background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">9.2*</div>
+      <div class="oss-note">
+        <strong>Best reasoning in the set. Same weights as Medium. Different result.</strong>
+        <ul class="oss-bullets">
+          <li>T2: perfect 10 — 4 helpers, full NumPy docs, correct <code>ClientTimeout</code></li>
+          <li>T3: 3 solutions including per-key locking with explicit trade-off analysis</li>
+          <li>T4: thinking spiralled — no deliverable committed in original run</li>
+          <li>Failure mode is overthinking, not lack of knowledge</li>
+        </ul>
+      </div>
+      <div class="oss-bar-row"><div class="oss-bar-lbl">Score</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="92" style="background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div></div>
+      <div class="oss-bar-row"><div class="oss-bar-lbl">Speed</div><div class="oss-bar-track"><div class="oss-bar-fill" data-w="38" style="background:var(--tx3)"></div></div></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--cyan);margin-top:.3rem">* projected — T4+T5 not completed in original run</div>
+    </div>
+  </div>
+</section>
+
+<!-- TASK BREAKDOWN -->
+<section class="breakdown-section fade-up">
+  <div class="section-label">Task-by-Task Analysis</div>
+
+  <div class="task-nav-wrap">
+    <div class="task-nav">
+      <button class="task-btn active" onclick="switchTask(0)">T1 · FIM YAML</button>
+      <button class="task-btn" onclick="switchTask(1)">T2 · Async Refactor</button>
+      <button class="task-btn" onclick="switchTask(2)">T3 · Race Condition</button>
+      <button class="task-btn" onclick="switchTask(3)">T4 · JobScheduler</button>
+      <button class="task-btn" onclick="switchTask(4)">T5 · Retry Decorator</button>
+    </div>
+  </div>
+
+  <!-- T1 -->
+  <div class="task-panel active">
+    <div class="task-heading">
+      <h3>Task 1 — FIM YAML Config Parser</h3>
+      <p>Fill-in-the-middle: complete a config parser that loads a YAML file and validates required keys. Tests native FIM capability, error handling instinct, and whether models go beyond the minimum ask.</p>
+    </div>
+    <div class="model-grid">
+      <div class="model-card mc-osshigh">
+        <div class="mc-header"><div class="mc-name">OSS High *</div><div class="mc-pill pill-c">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">pathlib + `or {}` guards empty file — best in set</span></li>
+          <li><span class="fg">Set-based missing key check: `[k for k in required if k not in config]`</span></li>
+          <li><span class="fg">FileNotFoundError + YAMLError properly re-raised</span></li>
+          <li><span class="fn">Thinking block shows full alternative analysis before committing</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-ossmed">
+        <div class="mc-header"><div class="mc-name">OSS Medium</div><div class="mc-pill pill-c">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">pathlib for path handling — portable</span></li>
+          <li><span class="fg">FileNotFoundError + YAMLError caught</span></li>
+          <li><span class="fg">Empty file handled with `or {}`</span></li>
+          <li><span class="fg">Optional type validation (host/port/db)</span></li>
+          <li><span class="fn">Best documented output in the set</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-gemma">
+        <div class="mc-header"><div class="mc-name">Gemma 4 E4B</div><div class="mc-pill pill-g">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">FileNotFoundError + YAMLError caught</span></li>
+          <li><span class="fg">Null value check on required keys</span></li>
+          <li><span class="fg">Full runnable test harness with cleanup</span></li>
+          <li><span class="fn">Only model to test its own output inline</span></li>
+          <li><span class="fw">TypeError for YAML parse errors (debatable)</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-devstral">
+        <div class="mc-header"><div class="mc-name">Devstral Small</div><div class="mc-pill pill-v">8/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Clean, correct fill — no bloat</span></li>
+          <li><span class="fg">Double-checked locking pattern named</span></li>
+          <li><span class="fw">No file error handling in FIM body</span></li>
+          <li><span class="fw">yaml import missing in snippet (FIM context)</span></li>
+          <li><span class="fn">Most concise correct answer</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-osslow">
+        <div class="mc-header"><div class="mc-name">OSS Low</div><div class="mc-pill pill-go">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">pathlib, FileNotFoundError, YAMLError</span></li>
+          <li><span class="fg">Validates config is a dict (not just truthy)</span></li>
+          <li><span class="fg">Set difference for missing keys — clean</span></li>
+          <li><span class="fg">Type checks host/port/database</span></li>
+          <li><span class="fn">Tied with Medium for best T1</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-codestral">
+        <div class="mc-header"><div class="mc-name">Codestral 22B</div><div class="mc-pill pill-o">7/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">FIM output is clean and functional</span></li>
+          <li><span class="fw">No file error handling at all</span></li>
+          <li><span class="fw">Imports declared outside function body</span></li>
+          <li><span class="fn">Does the job, nothing more</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-lfm2">
+        <div class="mc-header"><div class="mc-name">LFM2 24B A2B</div><div class="mc-pill pill-r">3/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fb">`if __name__ == "main"` — literal bug</span></li>
+          <li><span class="fb">Re-declares required_keys (duplicate)</span></li>
+          <li><span class="fb">No error handling whatsoever</span></li>
+          <li><span class="fn">Core YAML logic is correct at least</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="task-actions">
+      <button class="task-action-btn" onclick="openCodeModal('t1')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="2.5" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 6l1.5 1.5L3.5 9M7 9h2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        View Code
+      </button>
+      <button class="task-action-btn think-btn" onclick="openThinkModal('t1')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 4v3l2 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Model Thinking
+      </button>
+    </div>
+  </div>
+
+  <!-- T2 -->
+  <div class="task-panel">
+    <div class="task-heading">
+      <h3>Task 2 — Async Refactor with Error Handling</h3>
+      <p>Refactor a sync requests-based function to async, split into smaller functions with type hints and proper error handling. Tests aiohttp API knowledge, exception specificity, and timeout correctness.</p>
+    </div>
+    <div class="model-grid">
+      <div class="model-card mc-osshigh">
+        <div class="mc-header"><div class="mc-name">OSS High *</div><div class="mc-pill pill-c">10/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">4 single-responsibility helpers: build_url, fetch_json, extract_profile, main</span></li>
+          <li><span class="fg">ClientTimeout(total=) used correctly on session</span></li>
+          <li><span class="fg">raise_for_status() + ContentTypeError caught separately</span></li>
+          <li><span class="fg">Full NumPy-style docstrings on every function</span></li>
+          <li><span class="fn">Only model to document Parameters/Returns explicitly</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-ossmed">
+        <div class="mc-header"><div class="mc-name">OSS Medium</div><div class="mc-pill pill-c">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Uses httpx — cleaner API than aiohttp</span></li>
+          <li><span class="fg">build_url / get_response / parse_profile — clean SoC</span></li>
+          <li><span class="fg">raise_for_status for non-2xx errors</span></li>
+          <li><span class="fg">Full parameter docs in NumPy style</span></li>
+          <li><span class="fn">Best structure in the benchmark</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-gemma">
+        <div class="mc-header"><div class="mc-name">Gemma 4 E4B</div><div class="mc-pill pill-g">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">ClientTimeout(total=) used correctly</span></li>
+          <li><span class="fg">raise_for_status on every response</span></li>
+          <li><span class="fg">Per-exception granularity (6 types)</span></li>
+          <li><span class="fg">Constants extracted (USER_STATUS_ACTIVE)</span></li>
+          <li><span class="fw">Slightly over-engineered but all correct</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-devstral">
+        <div class="mc-header"><div class="mc-name">Devstral Small</div><div class="mc-pill pill-v">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">ClientTimeout(total=timeout) — correct</span></li>
+          <li><span class="fg">HTTP status check via response.ok</span></li>
+          <li><span class="fg">Proper exception types caught</span></li>
+          <li><span class="fg">Clean 3-function separation</span></li>
+          <li><span class="fn">Most readable of the aiohttp implementations</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-osslow">
+        <div class="mc-header"><div class="mc-name">OSS Low</div><div class="mc-pill pill-go">8/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">httpx used correctly</span></li>
+          <li><span class="fg">raise_for_status present</span></li>
+          <li><span class="fw">Re-raises HTTPError with wrapping — slightly redundant</span></li>
+          <li><span class="fn">Solid but less detailed than Medium</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-codestral">
+        <div class="mc-header"><div class="mc-name">Codestral 22B</div><div class="mc-pill pill-o">5/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fb">`timeout=timeout` raw — runtime aiohttp bug</span></li>
+          <li><span class="fb">No HTTP status check</span></li>
+          <li><span class="fb">Bare `except Exception` — swallows everything</span></li>
+          <li><span class="fw">Functional structure otherwise</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-lfm2">
+        <div class="mc-header"><div class="mc-name">LFM2 24B A2B</div><div class="mc-pill pill-r">5/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Catches aiohttp.ClientError correctly</span></li>
+          <li><span class="fb">`json.JSONDecodeError` — json not imported (NameError)</span></li>
+          <li><span class="fb">Session passed as argument — breaks public API</span></li>
+          <li><span class="fn">Structure is reasonable, execution broken</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="task-actions">
+      <button class="task-action-btn" onclick="openCodeModal('t2')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="2.5" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 6l1.5 1.5L3.5 9M7 9h2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        View Code
+      </button>
+      <button class="task-action-btn think-btn" onclick="openThinkModal('t2')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 4v3l2 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Model Thinking
+      </button>
+    </div>
+  </div>
+
+  <!-- T3 -->
+  <div class="task-panel">
+    <div class="task-heading">
+      <h3>Task 3 — Concurrent Cache Race Condition</h3>
+      <p>Find and fix the subtle race condition in a shared cache function. Tests understanding of threading primitives, double-checked locking, and lock contention trade-offs.</p>
+    </div>
+    <div class="model-grid">
+      <div class="model-card mc-osshigh">
+        <div class="mc-header"><div class="mc-name">OSS High *</div><div class="mc-pill pill-c">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Global lock with double-check + `setdefault` atomic write</span></li>
+          <li><span class="fg">Per-key lock alternative — explained with trade-off</span></li>
+          <li><span class="fg">Fetch happens outside lock (minimises contention)</span></li>
+          <li><span class="fn">Thinking block explicitly compared 4 different approaches</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-ossmed">
+        <div class="mc-header"><div class="mc-name">OSS Medium</div><div class="mc-pill pill-c">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Per-key lock + Future-based cache — two solutions</span></li>
+          <li><span class="fg">Async Event-based version for asyncio context</span></li>
+          <li><span class="fg">Trade-off analysis for each approach</span></li>
+          <li><span class="fn">Best answer in the entire benchmark by range</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-devstral">
+        <div class="mc-header"><div class="mc-name">Devstral Small</div><div class="mc-pill pill-v">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Double-checked locking implemented correctly</span></li>
+          <li><span class="fg">Pattern named explicitly — shows understanding</span></li>
+          <li><span class="fg">Efficiency analysis (minimises lock contention)</span></li>
+          <li><span class="fn">Cleanest explanation of why it works</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-osslow">
+        <div class="mc-header"><div class="mc-name">OSS Low</div><div class="mc-pill pill-go">8/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Per-key lock approach — correct and scalable</span></li>
+          <li><span class="fg">Future-based cache as bonus</span></li>
+          <li><span class="fw">Doesn't name double-checked locking pattern</span></li>
+          <li><span class="fn">Practical, well-structured</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-codestral">
+        <div class="mc-header"><div class="mc-name">Codestral 22B</div><div class="mc-pill pill-o">8/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Double-checked locking — correct</span></li>
+          <li><span class="fg">Clear explanation of the race</span></li>
+          <li><span class="fn">Clean, nothing wrong here</span></li>
+          <li><span class="fw">No alternative approaches offered</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-gemma">
+        <div class="mc-header"><div class="mc-name">Gemma 4 E4B</div><div class="mc-pill pill-v">6/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Diagnoses the race condition correctly</span></li>
+          <li><span class="fg">Provides async Lock version too</span></li>
+          <li><span class="fb">Holds lock for entire fetch — no double-check</span></li>
+          <li><span class="fb">Serialises all threads regardless of key</span></li>
+          <li><span class="fw">Functional but suboptimal under load</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-lfm2">
+        <div class="mc-header"><div class="mc-name">LFM2 24B A2B</div><div class="mc-pill pill-r">3/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Per-key lock idea is conceptually right</span></li>
+          <li><span class="fb">Sync function uses `async with lock` — syntax error</span></li>
+          <li><span class="fb">Does not await fetch_fn</span></li>
+          <li><span class="fb">Lock created via defaultdict(Lock) — creates event loop issue</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="task-actions">
+      <button class="task-action-btn" onclick="openCodeModal('t3')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="2.5" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 6l1.5 1.5L3.5 9M7 9h2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        View Code
+      </button>
+      <button class="task-action-btn think-btn" onclick="openThinkModal('t3')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 4v3l2 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Model Thinking
+      </button>
+    </div>
+  </div>
+
+  <!-- T4 -->
+  <div class="task-panel">
+    <div class="task-heading">
+      <h3>Task 4 — Async JobScheduler with Redis</h3>
+      <p>Implement a full JobScheduler class: parent-child tracking, descendant cancellation, distributed race protection, aggregate status, and Redis fault tolerance. The hardest task in the set.</p>
+    </div>
+    <div class="model-grid">
+      <div class="model-card mc-osshigh">
+        <div class="mc-header"><div class="mc-name">OSS High *</div><div class="mc-pill pill-x" style="color:var(--red);background:rgba(232,99,90,.1)">DNF</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">SET NX PX for true distributed lock — analysis correct</span></li>
+          <li><span class="fg">XREADGROUP stream consumer reasoning was sound</span></li>
+          <li><span class="fb">Thinking block spiralled — no final deliverable in original run</span></li>
+          <li><span class="fw">* ghost score projected from thinking output quality</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-ossmed">
+        <div class="mc-header"><div class="mc-name">OSS Medium</div><div class="mc-pill pill-c">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">@async_retry decorator wraps ALL Redis calls</span></li>
+          <li><span class="fg">SET NX PX for true distributed lock</span></li>
+          <li><span class="fg">XREADGROUP correctly implemented</span></li>
+          <li><span class="fg">Redis sets for parent→children</span></li>
+          <li><span class="fw">aioredis.errors vs .exceptions — minor API version mismatch</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-gemma">
+        <div class="mc-header"><div class="mc-name">Gemma 4 E4B</div><div class="mc-pill pill-g">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">JobStatus enum + JobState dataclass — production structure</span></li>
+          <li><span class="fg">Redis failure reverts state to PENDING — correct</span></li>
+          <li><span class="fg">BFS cancellation with pre-built dependency graph</span></li>
+          <li><span class="fg">FAILED status (no other model has this)</span></li>
+          <li><span class="fw">Dependency graph O(N²) — acknowledged but slow</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-devstral">
+        <div class="mc-header"><div class="mc-name">Devstral Small</div><div class="mc-pill pill-v">8/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Redis SET NX+EX for distributed claiming</span></li>
+          <li><span class="fg">BFS cancellation — correct traversal</span></li>
+          <li><span class="fw">status() uses `with self.lock` not `async with` — bug</span></li>
+          <li><span class="fw">_init_redis called without await in __init__</span></li>
+          <li><span class="fn">Best architectural instincts of the dense models</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-osslow">
+        <div class="mc-header"><div class="mc-name">OSS Low</div><div class="mc-pill pill-go">7/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">asyncio.Lock + cancellation propagation</span></li>
+          <li><span class="fg">Lazy Redis init — reasonable pattern</span></li>
+          <li><span class="fb">No distributed lock (asyncio.Lock only)</span></li>
+          <li><span class="fb">aioredis API slightly stale</span></li>
+          <li><span class="fn">Works for single-machine, not distributed</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-codestral">
+        <div class="mc-header"><div class="mc-name">Codestral 22B</div><div class="mc-pill pill-o">4/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fb">Sync Redis client mixed with asyncio</span></li>
+          <li><span class="fb">status() uses `with self.lock` — deadlocks</span></li>
+          <li><span class="fb">Lock acquired then re-acquired in finally — deadlock</span></li>
+          <li><span class="fb">_init_redis called without await</span></li>
+          <li><span class="fw">In-memory only — no real Redis stream</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-lfm2">
+        <div class="mc-header"><div class="mc-name">LFM2 24B A2B</div><div class="mc-pill pill-r">3/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fb">Syntax error: `min(2 ** (self._connection_attempt, 1), 5)` — tuple bug</span></li>
+          <li><span class="fb">job_details referenced before assignment</span></li>
+          <li><span class="fb">Parent lookup returns status string, not parent_id</span></li>
+          <li><span class="fb">Status truncated to 'canc' — typo</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="task-actions">
+      <button class="task-action-btn" onclick="openCodeModal('t4')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="2.5" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 6l1.5 1.5L3.5 9M7 9h2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        View Code
+      </button>
+      <button class="task-action-btn think-btn" onclick="openThinkModal('t4')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 4v3l2 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Model Thinking
+      </button>
+    </div>
+  </div>
+
+  <!-- T5 -->
+  <div class="task-panel">
+    <div class="task-heading">
+      <h3>Task 5 — Retry Decorator (The Wrecking Ball)</h3>
+      <p>Implement a retry decorator with exponential backoff, safe for sync and async, that fully preserves signature/docstring/return type including as a class method. Three traps: ParamSpec, async detection on wrapped functions, descriptor protocol.</p>
+    </div>
+    <div class="model-grid">
+      <div class="model-card mc-osshigh">
+        <div class="mc-header"><div class="mc-name">OSS High *</div><div class="mc-pill pill-c">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Explicit `__signature__` + `__annotations__` set</span></li>
+          <li><span class="fg">iscoroutinefunction — correct async detection</span></li>
+          <li><span class="fg">jitter + on_exception callback parameters</span></li>
+          <li><span class="fg">Both @retry and @retry() usage supported</span></li>
+          <li><span class="fw">No ParamSpec — only gap vs Gemma</span></li>
+          <li><span class="fw">* projected — scored from separate run</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-ossmed">
+        <div class="mc-header"><div class="mc-name">OSS Medium</div><div class="mc-pill pill-c">9/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">Explicit `wrapper.__signature__ = inspect.signature(func)`</span></li>
+          <li><span class="fg">Explicit `wrapper.__annotations__ = func.__annotations__`</span></li>
+          <li><span class="fg">Uses `inspect.iscoroutinefunction` (catches wrapped fns)</span></li>
+          <li><span class="fg">@overload for static type checker support</span></li>
+          <li><span class="fg">@retry and @retry() both supported</span></li>
+          <li><span class="fg">Class method test with `inspect.signature()` verification</span></li>
+          <li><span class="fw">No ParamSpec — only real gap</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-gemma">
+        <div class="mc-header"><div class="mc-name">Gemma 4 E4B</div><div class="mc-pill pill-g">8/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">ParamSpec used — only model to do so</span></li>
+          <li><span class="fg">TypeVar R for return type</span></li>
+          <li><span class="fg">Jitter on backoff delay</span></li>
+          <li><span class="fg">Class method test included</span></li>
+          <li><span class="fw">asyncio not imported in decorator body (uses it in wrapper)</span></li>
+          <li><span class="fw">No explicit __signature__ setting</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-devstral">
+        <div class="mc-header"><div class="mc-name">Devstral Small</div><div class="mc-pill pill-v">7/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">functools.wraps correctly applied</span></li>
+          <li><span class="fg">asyncio.iscoroutinefunction — correct detection</span></li>
+          <li><span class="fg">retry_on_result bonus feature</span></li>
+          <li><span class="fw">No ParamSpec, no __signature__ explicit set</span></li>
+          <li><span class="fw">No descriptor/method test in examples</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-osslow">
+        <div class="mc-header"><div class="mc-name">OSS Low</div><div class="mc-pill pill-go">7/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">functools.wraps + jitter generator</span></li>
+          <li><span class="fg">asyncio.iscoroutinefunction correct</span></li>
+          <li><span class="fb">Off-by-one: `attempt >= max_attempts - 1` re-raises early</span></li>
+          <li><span class="fw">No __signature__ explicit set</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-codestral">
+        <div class="mc-header"><div class="mc-name">Codestral 22B</div><div class="mc-pill pill-o">6/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fg">asyncio.iscoroutinefunction detection present</span></li>
+          <li><span class="fg">Two wrapper branches — correct approach</span></li>
+          <li><span class="fb">retry counter increments in finally — counts successes too</span></li>
+          <li><span class="fb">No __signature__, no ParamSpec</span></li>
+          <li><span class="fw">No method test, no class example</span></li>
+        </ul>
+      </div>
+      <div class="model-card mc-lfm2">
+        <div class="mc-header"><div class="mc-name">LFM2 24B A2B</div><div class="mc-pill pill-r">3/10</div></div>
+        <ul class="mc-findings">
+          <li><span class="fb">sync_wrapper declared as `async def` — wrong</span></li>
+          <li><span class="fb">`min(delay * 2, max_delable)` — NameError typo</span></li>
+          <li><span class="fb">_retry helper defined after `return decorator`</span></li>
+          <li><span class="fb">`raise e from type(e)` — invalid syntax</span></li>
+          <li><span class="fn">asyncio.iscoroutinefunction check is there — that's it</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="task-actions">
+      <button class="task-action-btn" onclick="openCodeModal('t5')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="2.5" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 6l1.5 1.5L3.5 9M7 9h2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        View Code
+      </button>
+      <button class="task-action-btn think-btn" onclick="openThinkModal('t5')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 4v3l2 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Model Thinking
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<!-- VERDICT -->
+<section class="verdict-section fade-up">
+  <div class="section-label">Final Verdicts</div>
+  <div class="verdict-grid">
+
+    <div class="v-card" data-n="*">
+      <div class="v-name" style="background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">GPT OSS 20B · High * Ghost Ranking</div>
+      <div class="v-score-line">9.2* projected · #1 hypothetical · MoE MXFP4</div>
+      <div class="v-body"><strong>The best reasoning in this benchmark</strong> — by a margin. T2 was a flawless 10: four helpers, correct timeout, full NumPy docs. T3 produced a multi-solution response with trade-off analysis. T4 spiralled in the original run — the model kept surfacing new edge cases and never committed to output. T5 was eventually produced in a fresh context. Ironically, <strong>it understood every task deeply enough to know its own limitations — and that knowledge caused it to freeze.</strong></div>
+      <div class="v-usecase"><span>Verdict</span>Would be #1 if it could commit. Run in Medium mode instead — same weights, same speed, doesn't spiral.</div>
+    </div>
+
+    <div class="v-card" data-n="1">
+      <div class="v-name">GPT OSS 20B · Medium</div>
+      <div class="v-score-line">9.0 avg · #1 overall · MoE MXFP4</div>
+      <div class="v-body">The surprise winner. <strong>Medium reasoning is the sweet spot</strong> — enough budget to reason through multi-constraint problems, not enough to spiral. T5 is the standout: explicit <code>__signature__</code> and <code>__annotations__</code> copying, <code>@overload</code>, both <code>@retry</code> and <code>@retry()</code> supported, class method verified with <code>inspect.signature()</code>. T3 gave three distinct caching solutions. This is not a fluky result.</div>
+      <div class="v-usecase"><span>Best for</span>General coding, complex multi-constraint architecture tasks. Run in medium mode only.</div>
+    </div>
+
+    <div class="v-card" data-n="2">
+      <div class="v-name">Devstral Small</div>
+      <div class="v-score-line">8.2 avg · #2 overall · Dense model</div>
+      <div class="v-body"><strong>Most consistent dense model in the set.</strong> Named double-checked locking by name. Correct <code>ClientTimeout</code>. Redis SET NX+EX for distributed claiming. The bugs it has are structural (sync lock used in async context) not logical — it understood what to build, just had API slip-ups. Still the model I trust most for incremental reasoning.</div>
+      <div class="v-usecase"><span>Best for</span>Day-to-day coding, refactoring, async Python, architectural reasoning.</div>
+    </div>
+
+    <div class="v-card" data-n="3">
+      <div class="v-name">Gemma 4 E4B</div>
+      <div class="v-score-line">8.2 avg · #2 overall · Tied with Devstral</div>
+      <div class="v-body"><strong>Extraordinary for its size.</strong> Only model to use <code>ParamSpec</code>. Introduced a <code>FAILED</code> job state no one else thought of. Built a full test harness for T1. T4 reverts to PENDING on Redis failure — correct behavior. Weakness is T3: it locked too broadly. <strong>The size-to-quality ratio here has no peer in this benchmark.</strong></div>
+      <div class="v-usecase"><span>Best for</span>Constrained environments, quality-first tasks. Impressive architecture instincts.</div>
+    </div>
+
+    <div class="v-card" data-n="4">
+      <div class="v-name">GPT OSS 20B · Low</div>
+      <div class="v-score-line">7.8 avg · #4 overall · MoE MXFP4</div>
+      <div class="v-body">Solid across the board with one critical fault: <strong>off-by-one in T5 re-raises one attempt early</strong>, meaning you get fewer retries than configured. T4 lacks a distributed Redis lock. Still, T1 and T3 are among the best outputs. <strong>Low mode is not bad — it's just missing the reasoning depth that Medium unlocks for free.</strong></div>
+      <div class="v-usecase"><span>Best for</span>Quick answers, low-latency tasks where a small error risk is acceptable.</div>
+    </div>
+
+    <div class="v-card" data-n="5">
+      <div class="v-name">Codestral 22B</div>
+      <div class="v-score-line">6.0 avg · #5 overall · FIM lane</div>
+      <div class="v-body">Marketed as a coding model. <strong>Only trustworthy in its one lane: FIM autocomplete.</strong> Outside of that: raw timeout bug in T2, deadlocking lock usage in T4, broken retry counter in T5. The marketing is not a lie — it really is a FIM autocomplete model. The problem is people use it for more than that.</div>
+      <div class="v-usecase"><span>Best for</span>Tab completion and FIM only. Do not use for architecture or reasoning tasks.</div>
+    </div>
+
+    <div class="v-card" data-n="6">
+      <div class="v-name">LFM2 24B A2B</div>
+      <div class="v-score-line">3.4 avg · #6 overall · 72–75 t/s</div>
+      <div class="v-body"><strong>Fastest model in this test. Also the most broken.</strong> Every task above T2 had at least one crash-level bug: syntax errors, undefined variables, wrong types for async context. T5 was almost impressively wrong — a sync wrapper declared as async, a NameError typo, a helper defined after return. <strong>Speed is the only win here, and speed without correctness is just failing faster.</strong></div>
+      <div class="v-usecase"><span>Best for</span>Simple, stateless tasks where speed matters and you verify output manually.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- AGENTIC RANKING -->
+<section class="agentic-section fade-up">
+  <div class="section-label">Agentic Loop — Bug Fix Session</div>
+  <div class="agentic-intro">
+    <p>Same bug, three models, one harness — <strong>OpenCode</strong>. The task was a real async job queue bug: retried jobs showed status <code>running</code> after <code>wait_for_completion</code> returned. All three diagnosed the root cause correctly. What separated them was everything after the diagnosis.</p>
+    <p class="ag-caveat">* OpenCode defaults to GPT OSS 20B as one of its primary LM Studio models — this gave OSS Medium a native advantage in tool call formatting and harness familiarity that Gemma and Devstral don't have. Factor accordingly.</p>
+  </div>
+
+  <div class="agentic-ranking">
+
+    <div class="ag-row ag-first">
+      <div class="ag-rank-col">
+        <div class="ag-rank">#1</div>
+        <div class="ag-rank-bar" style="background:var(--cyan)"></div>
+      </div>
+      <div class="ag-body">
+        <div class="ag-header">
+          <div class="ag-name">GPT OSS 20B · Medium</div>
+          <div class="ag-verdict-pill">Closed the loop</div>
+        </div>
+        <div class="ag-score-row">
+          <span class="ag-chip chip-good">Diagnosis ✓</span>
+          <span class="ag-chip chip-warn">Hallucinated output — caught</span>
+          <span class="ag-chip chip-good">Self-corrected</span>
+          <span class="ag-chip chip-good">Fix shipped</span>
+          <span class="ag-chip chip-good">Verified working</span>
+        </div>
+        <div class="ag-text">
+          The only model to complete the task end to end. When the first test returned ambiguous output, it fabricated a clean result rather than reporting what it actually saw. Pushed back on, it ran the debug script for real, acknowledged the discrepancy, and reasoned through the exact failure mechanism in its thinking block: <code>_delayed_requeue</code> tasks are fire-and-forget — they put the job back in the queue after a sleep, but <code>wait_for_completion</code> calls <code>queue.join()</code> before those tasks have had a chance to re-enqueue, meaning the sentinel goes out while retried jobs are still pending. Correct diagnosis, correct fix, working verification. The hallucination is a mark against it — but catching it and correcting it is still agentic behavior working as intended. That's the full loop.
+        </div>
+      </div>
+    </div>
+
+    <div class="ag-row ag-second">
+      <div class="ag-rank-col">
+        <div class="ag-rank">#2</div>
+        <div class="ag-rank-bar" style="background:var(--green)"></div>
+      </div>
+      <div class="ag-body">
+        <div class="ag-header">
+          <div class="ag-name">Gemma 4 E4B</div>
+          <div class="ag-verdict-pill">Tooling friction, not reasoning failure</div>
+        </div>
+        <div class="ag-score-row">
+          <span class="ag-chip chip-good">Diagnosis ✓ — first read</span>
+          <span class="ag-chip chip-good">No hallucinations</span>
+          <span class="ag-chip chip-bad">IndentationError — stuck in loop</span>
+          <span class="ag-chip chip-warn">No verification run</span>
+        </div>
+        <div class="ag-text">
+          Correctly identified the bug on first read. Immediately attempted an edit — and introduced an <code>IndentationError</code> via incorrect whitespace in the <code>newString</code>. Three subsequent recovery attempts all failed with "could not find oldString" because the broken file no longer matched any expected context string. The reasoning never went wrong. It knew exactly what to change and why. The failure was mechanical: edit tool precision, and an inability to adapt strategy — reading the file, trying a write, pivoting to a different approach — when the same pattern kept failing. Gemma isn't natively trained on agentic harness conventions. Given it found the root cause on first read without any agentic fine-tuning, this is a respectable result with a clear ceiling to remove.
+        </div>
+      </div>
+    </div>
+
+    <div class="ag-row ag-third">
+      <div class="ag-rank-col">
+        <div class="ag-rank">#3</div>
+        <div class="ag-rank-bar" style="background:var(--violet)"></div>
+      </div>
+      <div class="ag-body">
+        <div class="ag-header">
+          <div class="ag-name">Devstral Small</div>
+          <div class="ag-verdict-pill">Stopped iterating</div>
+        </div>
+        <div class="ag-score-row">
+          <span class="ag-chip chip-good">Diagnosis ✓</span>
+          <span class="ag-chip chip-good">No hallucinations</span>
+          <span class="ag-chip chip-good">First edit succeeded</span>
+          <span class="ag-chip chip-bad">Bug still present after fix</span>
+          <span class="ag-chip chip-bad">Did not re-engage</span>
+        </div>
+        <div class="ag-text">
+          The static benchmark had Devstral tied with Gemma at 8.2. Agentic context separates them clearly. Devstral made a clean first edit — no syntax errors, no tooling friction — ran verification, and observed the bug still present: 3 jobs stuck at <code>running</code> post-completion. Then it effectively stopped. It attempted a grep, fumbled a Python one-liner invocation, and didn't re-engage when the session stayed open. The distinction from Gemma matters: Devstral had a working tool environment and still didn't close the loop. Gemma was blocked by harness friction. The failure mode here is iteration, not tooling — and that's a harder thing to explain away.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ag-footnote">
+    <span class="ag-fn-label">Context</span>
+    OSS High also ran — tasked with diagnosing the residual 3-job failure that OSS Medium surfaced. It produced the most detailed reasoning of any session on the root cause but, true to form, did not deliver a complete fix. The ranking above covers the primary three-model comparison only.
+  </div>
+
+</section>
+
+<footer>
+  <div class="footer-left">
+    <span>Local LLM Benchmark · Apple M5 MBP 14" · 24GB Unified Memory · MLX Backend</span>
+    <span>All models tested under identical conditions · LM Studio 0.4.9+1 · April 2026</span>
+  </div>
+</footer>
+
+</div><!-- /wrap -->
+
+<!-- ══════════════════════════════════════════════════════
+     CODE MODALS
+     ══════════════════════════════════════════════════════ -->
+
+<!-- T1 Code Modal -->
+<div class="bm-modal" id="code-modal-t1">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T1 — FIM YAML Config Parser · Code Comparison</div>
+        <div class="bm-modal-type">Code output · 7 models</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('code-modal-t1')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="c-t1-osshigh">OSS High *<span class="bm-tab-score">9*</span></button>
+      <button class="bm-modal-tab" data-pane="c-t1-ossmed">OSS Med<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t1-gemma">Gemma<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t1-devstral">Devstral<span class="bm-tab-score">8</span></button>
+      <button class="bm-modal-tab" data-pane="c-t1-osslow">OSS Low<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t1-codestral">Codestral<span class="bm-tab-score">7</span></button>
+      <button class="bm-modal-tab" data-pane="c-t1-lfm2">LFM2<span class="bm-tab-score">3</span></button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="c-t1-osshigh">
+        <div class="bm-code-block"><div class="bm-code-label">OSS High — clean + empty-file guard</div><div class="bm-code-body"><span class="kw">import</span> yaml
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> typing <span class="kw">import</span> Dict, Any
+
+<span class="kw">def</span> <span class="fn">parse_config</span>(filepath: <span class="bi">str</span>) -> Dict[<span class="bi">str</span>, Any]:
+    required_keys = [<span class="st">"host"</span>, <span class="st">"port"</span>, <span class="st">"database"</span>]
+    <span class="kw">try</span>:
+        <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="st">'r'</span>, encoding=<span class="st">'utf-8'</span>) <span class="kw">as</span> f:
+            config: Dict[<span class="bi">str</span>, Any] = yaml.safe_load(f) <span class="kw">or</span> {}  <span class="cm"># handles empty file</span>
+    <span class="kw">except</span> <span class="bi">FileNotFoundError</span> <span class="kw">as</span> e:
+        <span class="kw">raise</span> <span class="bi">FileNotFoundError</span>(<span class="st">f"Config file not found: {filepath}"</span>) <span class="kw">from</span> e
+    <span class="kw">except</span> yaml.YAMLError <span class="kw">as</span> e:
+        <span class="kw">raise</span> <span class="bi">ValueError</span>(<span class="st">f"Error parsing YAML file {filepath}: {e}"</span>) <span class="kw">from</span> e
+
+    missing = [k <span class="kw">for</span> k <span class="kw">in</span> required_keys <span class="kw">if</span> k <span class="kw">not in</span> config]
+    <span class="kw">if</span> missing:
+        <span class="kw">raise</span> <span class="bi">KeyError</span>(<span class="st">f"Missing required configuration keys: {', '.join(missing)}"</span>)
+
+    <span class="kw">return</span> config</div></div>
+      </div>
+      <div class="bm-pane" id="c-t1-ossmed">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Medium — pathlib + type validation</div><div class="bm-code-body"><span class="kw">import</span> yaml
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+<span class="kw">def</span> <span class="fn">parse_config</span>(filepath: <span class="bi">str</span>) -> dict:
+    path = Path(filepath)
+    <span class="kw">if not</span> path.exists():
+        <span class="kw">raise</span> <span class="bi">FileNotFoundError</span>(<span class="st">f"Config file not found: {filepath}"</span>)
+    <span class="kw">try</span>:
+        config = yaml.safe_load(path.read_text()) <span class="kw">or</span> {}
+    <span class="kw">except</span> yaml.YAMLError <span class="kw">as</span> e:
+        <span class="kw">raise</span> <span class="bi">ValueError</span>(<span class="st">f"YAML parse error: {e}"</span>) <span class="kw">from</span> e
+    required = {<span class="st">"host"</span>, <span class="st">"port"</span>, <span class="st">"database"</span>}
+    missing = required - config.keys()
+    <span class="kw">if</span> missing:
+        <span class="kw">raise</span> <span class="bi">KeyError</span>(<span class="st">f"Missing keys: {missing}"</span>)
+    <span class="kw">if not isinstance</span>(config[<span class="st">"port"</span>], <span class="bi">int</span>):
+        <span class="kw">raise</span> <span class="bi">TypeError</span>(<span class="st">"port must be an integer"</span>)
+    <span class="kw">return</span> config</div></div>
+      </div>
+      <div class="bm-pane" id="c-t1-gemma">
+        <div class="bm-code-block"><div class="bm-code-label">Gemma — rewrote full function + test harness</div><div class="bm-code-body"><span class="kw">import</span> yaml
+
+<span class="kw">def</span> <span class="fn">parse_config</span>(filepath: <span class="bi">str</span>) -> dict:
+    required_keys = [<span class="st">"host"</span>, <span class="st">"port"</span>, <span class="st">"database"</span>]
+    <span class="kw">try</span>:
+        <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="st">'r'</span>) <span class="kw">as</span> f:
+            config = yaml.safe_load(f)
+    <span class="kw">except</span> <span class="bi">FileNotFoundError</span>:
+        <span class="kw">raise</span> <span class="bi">ValueError</span>(<span class="st">f"Config file not found at {filepath}"</span>)
+    <span class="kw">except</span> yaml.YAMLError <span class="kw">as</span> e:
+        <span class="kw">raise</span> <span class="bi">TypeError</span>(<span class="st">f"Error parsing YAML file: {e}"</span>)  <span class="cm"># note: TypeError</span>
+
+    <span class="kw">for</span> key <span class="kw">in</span> required_keys:
+        <span class="kw">if</span> key <span class="kw">not in</span> config <span class="kw">or</span> config[key] <span class="kw">is None</span>:  <span class="cm"># checks null values too</span>
+            <span class="kw">raise</span> <span class="bi">KeyError</span>(<span class="st">f"Missing or null key: '{key}'"</span>)
+
+    <span class="kw">return</span> config</div></div>
+      </div>
+      <div class="bm-pane" id="c-t1-devstral">
+        <div class="bm-code-block"><div class="bm-code-label">Devstral — FIM fill only, most concise</div><div class="bm-code-body"><span class="cm"># Devstral filled only the gap (correct FIM discipline):</span>
+<span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="st">'r'</span>) <span class="kw">as</span> f:
+    config = yaml.safe_load(f)
+
+<span class="kw">for</span> key <span class="kw">in</span> required_keys:
+    <span class="kw">if</span> key <span class="kw">not in</span> config:
+        <span class="kw">raise</span> <span class="bi">ValueError</span>(<span class="st">f"Missing required configuration key: '{key}'"</span>)</div></div>
+      </div>
+      <div class="bm-pane" id="c-t1-osslow">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Low — validates config is dict</div><div class="bm-code-body"><span class="kw">import</span> yaml
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+<span class="kw">def</span> <span class="fn">parse_config</span>(filepath: <span class="bi">str</span>) -> dict:
+    required_keys = [<span class="st">"host"</span>, <span class="st">"port"</span>, <span class="st">"database"</span>]
+    path = Path(filepath)
+    <span class="kw">if not</span> path.is_file():
+        <span class="kw">raise</span> <span class="bi">FileNotFoundError</span>(<span class="st">f"Config not found: {filepath}"</span>)
+    <span class="kw">try</span>:
+        config = yaml.safe_load(path.read_text())
+    <span class="kw">except</span> yaml.YAMLError <span class="kw">as</span> e:
+        <span class="kw">raise</span> <span class="bi">ValueError</span>(<span class="st">f"Invalid YAML: {e}"</span>) <span class="kw">from</span> e
+    <span class="kw">if not isinstance</span>(config, dict):
+        <span class="kw">raise</span> <span class="bi">TypeError</span>(<span class="st">"Config must be a YAML mapping"</span>)
+    missing = set(required_keys) - config.keys()
+    <span class="kw">if</span> missing:
+        <span class="kw">raise</span> <span class="bi">KeyError</span>(<span class="st">f"Missing keys: {missing}"</span>)
+    <span class="kw">return</span> config</div></div>
+      </div>
+      <div class="bm-pane" id="c-t1-codestral">
+        <div class="bm-code-block"><div class="bm-code-label">Codestral — imports outside function, no error handling</div><div class="bm-code-body"><span class="kw">import</span> yaml  <span class="cm"># ✗ declared outside FIM gap</span>
+<span class="kw">from</span> typing <span class="kw">import</span> Any, Dict
+
+<span class="kw">def</span> <span class="fn">parse_config</span>(filepath: <span class="bi">str</span>) -> dict:
+    required_keys = [<span class="st">"host"</span>, <span class="st">"port"</span>, <span class="st">"database"</span>]
+    <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="st">'r'</span>) <span class="kw">as</span> f:
+        config = yaml.safe_load(f)  <span class="cm"># no FileNotFoundError handling</span>
+
+    <span class="kw">for</span> key <span class="kw">in</span> required_keys:
+        <span class="kw">if</span> key <span class="kw">not in</span> config:
+            <span class="kw">raise</span> <span class="bi">ValueError</span>(<span class="st">f"Required key '{key}' not found."</span>)
+
+    <span class="kw">return</span> config</div></div>
+      </div>
+      <div class="bm-pane" id="c-t1-lfm2">
+        <div class="bm-code-block"><div class="bm-code-label">LFM2 — literal bugs, re-declared required_keys</div><div class="bm-code-body"><span class="kw">import</span> yaml
+
+<span class="kw">def</span> <span class="fn">parse_config</span>(filepath: <span class="bi">str</span>) -> dict:
+    required_keys = [<span class="st">"host"</span>, <span class="st">"port"</span>, <span class="st">"database"</span>]  <span class="cm"># ✗ duplicate</span>
+    <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="st">'r'</span>) <span class="kw">as</span> f:
+        config = yaml.safe_load(f)
+
+    required_keys = [<span class="st">"host"</span>, <span class="st">"port"</span>, <span class="st">"database"</span>]  <span class="cm"># ✗ re-declared</span>
+    <span class="kw">for</span> key <span class="kw">in</span> required_keys:
+        <span class="kw">if</span> key <span class="kw">not in</span> config:
+            config[key] = <span class="kw">None</span>  <span class="cm"># ✗ silently adds None instead of raising</span>
+
+    <span class="kw">return</span> config
+
+<span class="kw">if</span> __name__ == <span class="st">"main"</span>:  <span class="cm"># ✗ literal bug — should be "__main__"</span>
+    config = <span class="fn">parse_config</span>(<span class="st">"config.yaml"</span>)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T2 Code Modal -->
+<div class="bm-modal" id="code-modal-t2">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T2 — Async Refactor · Code Comparison</div>
+        <div class="bm-modal-type">Code output · 7 models</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('code-modal-t2')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="c-t2-osshigh">OSS High *<span class="bm-tab-score">10*</span></button>
+      <button class="bm-modal-tab" data-pane="c-t2-ossmed">OSS Med<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t2-gemma">Gemma<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t2-devstral">Devstral<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t2-osslow">OSS Low<span class="bm-tab-score">8</span></button>
+      <button class="bm-modal-tab" data-pane="c-t2-codestral">Codestral<span class="bm-tab-score">5</span></button>
+      <button class="bm-modal-tab" data-pane="c-t2-lfm2">LFM2<span class="bm-tab-score">5</span></button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="c-t2-osshigh">
+        <div class="bm-code-block"><div class="bm-code-label">OSS High — 4 helpers, NumPy docs, perfect</div><div class="bm-code-body"><span class="kw">import</span> asyncio
+<span class="kw">from</span> typing <span class="kw">import</span> Any, Dict, Optional, Union
+<span class="kw">import</span> aiohttp
+
+<span class="kw">def</span> <span class="fn">_build_user_url</span>(db_url: <span class="bi">str</span>, user_id: Union[<span class="bi">int</span>, <span class="bi">str</span>]) -> <span class="bi">str</span>:
+    <span class="st">"""Construct the endpoint for a particular user."""</span>
+    <span class="kw">return</span> <span class="st">f"{db_url.rstrip('/')}/users/{user_id}"</span>
+
+<span class="kw">async def</span> <span class="fn">_fetch_json</span>(session: aiohttp.ClientSession, url: <span class="bi">str</span>) -> Dict[<span class="bi">str</span>, Any]:
+    <span class="st">"""Send a GET request and return the JSON body."""</span>
+    <span class="kw">async with</span> session.get(url) <span class="kw">as</span> response:
+        response.raise_for_status()
+        <span class="kw">try</span>:
+            <span class="kw">return await</span> response.json()
+        <span class="kw">except</span> aiohttp.ContentTypeError <span class="kw">as</span> e:
+            <span class="kw">raise</span> <span class="bi">ValueError</span>(<span class="st">f"Response is not JSON: {e}"</span>) <span class="kw">from</span> e
+
+<span class="kw">async def</span> <span class="fn">_extract_profile</span>(data: Dict[<span class="bi">str</span>, Any]) -> Optional[Dict[<span class="bi">str</span>, Any]]:
+    <span class="st">"""Return the profile if the user is active."""</span>
+    <span class="kw">if</span> data.get(<span class="st">"status"</span>) == <span class="st">"active"</span>:
+        <span class="kw">return</span> data.get(<span class="st">"profile"</span>)
+    <span class="kw">return None</span>
+
+<span class="kw">async def</span> <span class="fn">fetch_user_data</span>(
+    user_id: Union[<span class="bi">int</span>, <span class="bi">str</span>], db_url: <span class="bi">str</span>, timeout: <span class="bi">float</span> = <span class="nm">30.0</span>
+) -> Optional[Dict[<span class="bi">str</span>, Any]]:
+    url = <span class="fn">_build_user_url</span>(db_url, user_id)
+    timeout_obj = aiohttp.ClientTimeout(total=timeout)
+    <span class="kw">async with</span> aiohttp.ClientSession(timeout=timeout_obj) <span class="kw">as</span> session:
+        <span class="kw">try</span>:
+            data = <span class="kw">await</span> <span class="fn">_fetch_json</span>(session, url)
+        <span class="kw">except</span> aiohttp.ClientError <span class="kw">as</span> exc:
+            <span class="kw">raise</span> <span class="bi">RuntimeError</span>(<span class="st">f"Network error fetching user {user_id}"</span>) <span class="kw">from</span> exc
+        <span class="kw">except</span> asyncio.TimeoutError <span class="kw">as</span> exc:
+            <span class="kw">raise</span> <span class="bi">TimeoutError</span>(<span class="st">f"Request timed out after {timeout}s"</span>) <span class="kw">from</span> exc
+    <span class="kw">return await</span> <span class="fn">_extract_profile</span>(data)</div></div>
+      </div>
+      <div class="bm-pane" id="c-t2-ossmed">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Medium — httpx, raise_for_status, best structure</div><div class="bm-code-body"><span class="kw">import</span> asyncio, httpx
+<span class="kw">from</span> typing <span class="kw">import</span> Dict, Any, Optional
+
+<span class="kw">def</span> <span class="fn">build_url</span>(db_url: <span class="bi">str</span>, user_id: <span class="bi">str</span>) -> <span class="bi">str</span>:
+    <span class="kw">return</span> <span class="st">f"{db_url.rstrip('/')}/users/{user_id}"</span>
+
+<span class="kw">async def</span> <span class="fn">get_response</span>(client: httpx.AsyncClient, url: <span class="bi">str</span>) -> Dict[<span class="bi">str</span>, Any]:
+    response = <span class="kw">await</span> client.get(url)
+    response.raise_for_status()
+    <span class="kw">return</span> response.json()
+
+<span class="kw">def</span> <span class="fn">parse_profile</span>(data: Dict[<span class="bi">str</span>, Any]) -> Optional[Dict[<span class="bi">str</span>, Any]]:
+    <span class="kw">if</span> data.get(<span class="st">"status"</span>) == <span class="st">"active"</span>:
+        <span class="kw">return</span> data.get(<span class="st">"profile"</span>)
+    <span class="kw">return None</span>
+
+<span class="kw">async def</span> <span class="fn">fetch_user_data</span>(user_id: <span class="bi">str</span>, db_url: <span class="bi">str</span>, timeout: <span class="bi">int</span> = <span class="nm">30</span>):
+    url = <span class="fn">build_url</span>(db_url, user_id)
+    <span class="kw">async with</span> httpx.AsyncClient(timeout=timeout) <span class="kw">as</span> client:
+        <span class="kw">try</span>:
+            data = <span class="kw">await</span> <span class="fn">get_response</span>(client, url)
+        <span class="kw">except</span> httpx.HTTPStatusError <span class="kw">as</span> e:
+            <span class="kw">raise</span>
+        <span class="kw">except</span> httpx.RequestError <span class="kw">as</span> e:
+            <span class="kw">raise</span> <span class="bi">RuntimeError</span>(<span class="st">f"Request failed: {e}"</span>) <span class="kw">from</span> e
+    <span class="kw">return</span> <span class="fn">parse_profile</span>(data)</div></div>
+      </div>
+      <div class="bm-pane" id="c-t2-gemma">
+        <div class="bm-code-block"><div class="bm-code-label">Gemma — 6 exception types, over-engineered but correct</div><div class="bm-code-body"><span class="kw">import</span> asyncio, aiohttp
+<span class="kw">from</span> typing <span class="kw">import</span> Optional, Dict, Any
+
+USER_STATUS_ACTIVE = <span class="st">"active"</span>  <span class="cm"># extracted constant</span>
+
+<span class="kw">async def</span> <span class="fn">_fetch_raw_user_response</span>(session, url, timeout) -> Optional[Dict]:
+    <span class="kw">try</span>:
+        <span class="kw">async with</span> session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) <span class="kw">as</span> resp:
+            resp.raise_for_status()
+            <span class="kw">return await</span> resp.json()
+    <span class="kw">except</span> aiohttp.client_exceptions.InvalidURL:
+        <span class="kw">return None</span>
+    <span class="kw">except</span> aiohttp.client_exceptions.ClientConnectorError:
+        <span class="kw">return None</span>
+    <span class="kw">except</span> asyncio.TimeoutError:
+        <span class="kw">return None</span>
+    <span class="kw">except</span> aiohttp.ClientResponseError:
+        <span class="kw">return None</span>
+
+<span class="kw">async def</span> <span class="fn">_validate_and_extract_profile</span>(raw_data) -> Optional[Dict]:
+    <span class="cm"># ✗ unnecessarily async — no awaits inside</span>
+    <span class="kw">if</span> raw_data.get(<span class="st">"status"</span>) == USER_STATUS_ACTIVE:
+        <span class="kw">return</span> raw_data.get(<span class="st">"profile"</span>)
+    <span class="kw">return None</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t2-devstral">
+        <div class="bm-code-block"><div class="bm-code-label">Devstral — clean 3-function, correct timeout</div><div class="bm-code-body"><span class="kw">import</span> aiohttp, asyncio
+<span class="kw">from</span> typing <span class="kw">import</span> Optional, Dict, Any
+
+<span class="kw">async def</span> <span class="fn">fetch_user</span>(user_id: <span class="bi">str</span>, timeout: <span class="bi">int</span> = <span class="nm">30</span>) -> Dict[<span class="bi">str</span>, Any]:
+    <span class="kw">try</span>:
+        <span class="kw">async with</span> aiohttp.ClientSession() <span class="kw">as</span> session:
+            <span class="kw">async with</span> session.get(
+                <span class="st">f"https://api.example.com/users/{user_id}"</span>,
+                timeout=aiohttp.ClientTimeout(total=timeout)  <span class="cm"># ✓ correct</span>
+            ) <span class="kw">as</span> response:
+                <span class="kw">if not</span> response.ok:
+                    <span class="kw">return None</span>
+                data = <span class="kw">await</span> response.json()
+                <span class="kw">return</span> <span class="fn">parse_user</span>(data)
+    <span class="kw">except</span> aiohttp.ClientError:
+        <span class="kw">return None</span>
+    <span class="kw">except</span> asyncio.TimeoutError:
+        <span class="kw">return None</span>
+
+<span class="kw">def</span> <span class="fn">parse_user</span>(data: Dict) -> Optional[Dict]:
+    <span class="kw">if</span> data.get(<span class="st">"status"</span>) == <span class="st">"active"</span>:
+        <span class="kw">return</span> data[<span class="st">"profile"</span>]
+    <span class="kw">return None</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t2-osslow">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Low — httpx, solid but less detailed</div><div class="bm-code-body"><span class="kw">import</span> asyncio, httpx
+<span class="kw">from</span> typing <span class="kw">import</span> Optional, Dict
+
+<span class="kw">async def</span> <span class="fn">fetch_user_data</span>(user_id: <span class="bi">str</span>, db_url: <span class="bi">str</span>, timeout: <span class="bi">int</span> = <span class="nm">30</span>):
+    url = <span class="st">f"{db_url}/users/{user_id}"</span>
+    <span class="kw">async with</span> httpx.AsyncClient(timeout=timeout) <span class="kw">as</span> client:
+        <span class="kw">try</span>:
+            response = <span class="kw">await</span> client.get(url)
+            response.raise_for_status()
+        <span class="kw">except</span> httpx.HTTPStatusError <span class="kw">as</span> e:
+            <span class="kw">raise</span> <span class="bi">RuntimeError</span>(<span class="st">f"HTTP error: {e.response.status_code}"</span>) <span class="kw">from</span> e  <span class="cm"># slightly redundant</span>
+        <span class="kw">except</span> httpx.RequestError <span class="kw">as</span> e:
+            <span class="kw">raise</span> <span class="bi">RuntimeError</span>(<span class="st">f"Request error: {e}"</span>) <span class="kw">from</span> e
+    data = response.json()
+    <span class="kw">return</span> data.get(<span class="st">"profile"</span>) <span class="kw">if</span> data.get(<span class="st">"status"</span>) == <span class="st">"active"</span> <span class="kw">else None</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t2-codestral">
+        <div class="bm-code-block"><div class="bm-code-label">Codestral — runtime bug: raw int timeout</div><div class="bm-code-body"><span class="kw">import</span> aiohttp
+<span class="kw">from</span> typing <span class="kw">import</span> Dict, Any, Optional
+
+<span class="kw">async def</span> <span class="fn">fetch_user</span>(db_url: <span class="bi">str</span>, user_id: <span class="bi">int</span>, timeout: <span class="bi">int</span> = <span class="nm">30</span>) -> Dict[<span class="bi">str</span>, Any]:
+    <span class="kw">async with</span> aiohttp.ClientSession() <span class="kw">as</span> session:
+        url = <span class="st">f"{db_url}/users/{user_id}"</span>
+        <span class="kw">async with</span> session.get(url, timeout=timeout) <span class="kw">as</span> response:  <span class="er"># ✗ RUNTIME BUG — expects ClientTimeout</span>
+            data = <span class="kw">await</span> response.json()
+    <span class="kw">return</span> data
+
+<span class="kw">async def</span> <span class="fn">fetch_user_data</span>(db_url: <span class="bi">str</span>, user_id: <span class="bi">int</span>, timeout: <span class="bi">int</span> = <span class="nm">30</span>):
+    <span class="kw">try</span>:
+        data = <span class="kw">await</span> <span class="fn">fetch_user</span>(db_url, user_id, timeout)
+    <span class="kw">except</span> <span class="bi">Exception</span> <span class="kw">as</span> e:  <span class="er"># ✗ bare except — swallows all errors</span>
+        <span class="kw">return None</span>
+    <span class="kw">return</span> data.get(<span class="st">"profile"</span>) <span class="kw">if</span> data.get(<span class="st">"status"</span>) == <span class="st">"active"</span> <span class="kw">else None</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t2-lfm2">
+        <div class="bm-code-block"><div class="bm-code-label">LFM2 — NameError: json not imported</div><div class="bm-code-body"><span class="kw">import</span> aiohttp
+<span class="kw">from</span> typing <span class="kw">import</span> Optional, Dict
+
+<span class="kw">async def</span> <span class="fn">fetch_user</span>(session: aiohttp.ClientSession, url: <span class="bi">str</span>, timeout: <span class="bi">int</span>) -> Dict:
+    <span class="cm"># ✗ session passed as arg — breaks public API</span>
+    <span class="kw">async with</span> session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) <span class="kw">as</span> resp:
+        resp.raise_for_status()
+        <span class="kw">try</span>:
+            <span class="kw">return await</span> resp.json()
+        <span class="kw">except</span> json.JSONDecodeError:  <span class="er"># ✗ json not imported — NameError</span>
+            <span class="kw">raise</span> <span class="bi">ValueError</span>(<span class="st">"Invalid JSON response"</span>)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T3 Code Modal -->
+<div class="bm-modal" id="code-modal-t3">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T3 — Concurrent Cache Race Condition · Code Comparison</div>
+        <div class="bm-modal-type">Code output · 7 models</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('code-modal-t3')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="c-t3-osshigh">OSS High *<span class="bm-tab-score">9*</span></button>
+      <button class="bm-modal-tab" data-pane="c-t3-ossmed">OSS Med<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t3-devstral">Devstral<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t3-osslow">OSS Low<span class="bm-tab-score">8</span></button>
+      <button class="bm-modal-tab" data-pane="c-t3-codestral">Codestral<span class="bm-tab-score">8</span></button>
+      <button class="bm-modal-tab" data-pane="c-t3-gemma">Gemma<span class="bm-tab-score">6</span></button>
+      <button class="bm-modal-tab" data-pane="c-t3-lfm2">LFM2<span class="bm-tab-score">3</span></button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="c-t3-osshigh">
+        <div class="bm-code-block"><div class="bm-code-label">OSS High — double-check + setdefault + per-key alt</div><div class="bm-code-body"><span class="kw">import</span> threading
+<span class="kw">from</span> typing <span class="kw">import</span> Any, Callable, Hashable
+
+_cache: dict[Any, Any] = {}
+_lock = threading.Lock()
+
+<span class="kw">def</span> <span class="fn">get_or_fetch</span>(key: Hashable, fetch_fn: Callable[[Hashable], Any]) -> Any:
+    <span class="cm"># 1. Quick read — no lock needed for the check</span>
+    <span class="kw">with</span> _lock:
+        <span class="kw">if</span> key <span class="kw">in</span> _cache:
+            <span class="kw">return</span> _cache[key]
+
+    <span class="cm"># 2. Compute outside lock — don't block other readers</span>
+    value = fetch_fn(key)
+
+    <span class="cm"># 3. Atomic write — setdefault wins the race</span>
+    <span class="kw">with</span> _lock:
+        <span class="kw">return</span> _cache.setdefault(key, value)
+
+<span class="cm"># Alternative: per-key lock for finer granularity</span>
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+_key_locks = defaultdict(threading.Lock)
+
+<span class="kw">def</span> <span class="fn">get_or_fetch_v2</span>(key: Hashable, fetch_fn: Callable) -> Any:
+    lock = _key_locks[key]
+    <span class="kw">with</span> lock:
+        <span class="kw">if</span> key <span class="kw">in</span> _cache:
+            <span class="kw">return</span> _cache[key]
+        value = fetch_fn(key)
+        _cache[key] = value
+    <span class="kw">return</span> _cache[key]</div></div>
+      </div>
+      <div class="bm-pane" id="c-t3-ossmed">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Medium — per-key lock + Future-based + async versions</div><div class="bm-code-body"><span class="kw">import</span> threading
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+_cache = {}
+_key_locks = defaultdict(threading.Lock)
+
+<span class="cm"># Solution 1: Per-key lock</span>
+<span class="kw">def</span> <span class="fn">get_or_fetch</span>(key, fetch_fn):
+    <span class="kw">with</span> _key_locks[key]:
+        <span class="kw">if</span> key <span class="kw">not in</span> _cache:
+            _cache[key] = fetch_fn(key)
+        <span class="kw">return</span> _cache[key]
+
+<span class="cm"># Solution 2: Future-based (prevents duplicate fetches entirely)</span>
+<span class="kw">import</span> concurrent.futures
+_futures: dict = {}
+_futures_lock = threading.Lock()
+
+<span class="kw">def</span> <span class="fn">get_or_fetch_future</span>(key, fetch_fn):
+    <span class="kw">with</span> _futures_lock:
+        <span class="kw">if</span> key <span class="kw">in</span> _cache:
+            <span class="kw">return</span> _cache[key]
+        <span class="kw">if</span> key <span class="kw">not in</span> _futures:
+            future = concurrent.futures.Future()
+            _futures[key] = future
+            <span class="kw">return None</span>  <span class="cm"># first caller fetches</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t3-devstral">
+        <div class="bm-code-block"><div class="bm-code-label">Devstral — named double-checked locking, cleanest</div><div class="bm-code-body"><span class="kw">import</span> threading
+
+_cache = {}
+_cache_lock = threading.Lock()
+
+<span class="kw">def</span> <span class="fn">get_or_fetch</span>(key, fetch_fn):
+    <span class="cm"># Fast path — no lock needed</span>
+    <span class="kw">if</span> key <span class="kw">in</span> _cache:
+        <span class="kw">return</span> _cache[key]
+
+    <span class="cm"># Critical section — acquire lock</span>
+    <span class="kw">with</span> _cache_lock:
+        <span class="cm"># Double-check (another thread may have filled it)</span>
+        <span class="kw">if</span> key <span class="kw">not in</span> _cache:
+            _cache[key] = fetch_fn(key)
+        <span class="kw">return</span> _cache[key]
+
+<span class="cm"># "This pattern is known as double-checked locking and is a</span>
+<span class="cm"># common solution for thread-safe caching." — Devstral</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t3-osslow">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Low — per-key lock, practical</div><div class="bm-code-body"><span class="kw">import</span> threading
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+_cache = {}
+_locks = defaultdict(threading.Lock)
+
+<span class="kw">def</span> <span class="fn">get_or_fetch</span>(key, fetch_fn):
+    <span class="kw">with</span> _locks[key]:
+        <span class="kw">if</span> key <span class="kw">not in</span> _cache:
+            _cache[key] = fetch_fn(key)
+        <span class="kw">return</span> _cache[key]</div></div>
+      </div>
+      <div class="bm-pane" id="c-t3-codestral">
+        <div class="bm-code-block"><div class="bm-code-label">Codestral — correct double-checked locking</div><div class="bm-code-body"><span class="kw">import</span> threading
+
+_cache = {}
+_lock = threading.Lock()
+
+<span class="kw">def</span> <span class="fn">get_or_fetch</span>(key, fetch_fn):
+    <span class="kw">if</span> key <span class="kw">in</span> _cache:
+        <span class="kw">return</span> _cache[key]
+    <span class="kw">with</span> _lock:
+        <span class="kw">if</span> key <span class="kw">not in</span> _cache:  <span class="cm"># double-check after acquiring</span>
+            value = fetch_fn(key)
+            _cache[key] = value
+    <span class="kw">return</span> _cache[key]</div></div>
+      </div>
+      <div class="bm-pane" id="c-t3-gemma">
+        <div class="bm-code-block"><div class="bm-code-label">Gemma — locks entire function including fetch</div><div class="bm-code-body"><span class="kw">import</span> threading
+
+_cache = {}
+lock = threading.Lock()
+
+<span class="kw">def</span> <span class="fn">get_or_fetch</span>(key, fetch_fn):
+    <span class="kw">with</span> lock:  <span class="er"># ✗ locks entire function body</span>
+        <span class="kw">if</span> key <span class="kw">not in</span> _cache:
+            _cache[key] = fetch_fn(key)  <span class="er"># ✗ slow fetch happens while lock held</span>
+        <span class="kw">return</span> _cache[key]
+
+<span class="cm"># Problem: all threads block during fetch_fn(key).</span>
+<span class="cm"># If fetch takes 5 seconds, every thread waits 5s.</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t3-lfm2">
+        <div class="bm-code-block"><div class="bm-code-label">LFM2 — syntax error: async with in sync function</div><div class="bm-code-body"><span class="kw">import</span> asyncio
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+_cache = {}
+_locks = defaultdict(asyncio.Lock)  <span class="er"># ✗ Lock() needs event loop at creation</span>
+
+<span class="kw">def</span> <span class="fn">get_or_fetch</span>(key, fetch_fn):  <span class="er"># ✗ sync function</span>
+    <span class="kw">async with</span> _locks[key]:  <span class="er"># ✗ SyntaxError: async with outside async def</span>
+        <span class="kw">if</span> key <span class="kw">not in</span> _cache:
+            _cache[key] = fetch_fn(key)  <span class="er"># ✗ should be: await fetch_fn(key)</span>
+        <span class="kw">return</span> _cache[key]</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T4 Code Modal -->
+<div class="bm-modal" id="code-modal-t4">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T4 — Async JobScheduler · Key Patterns</div>
+        <div class="bm-modal-type">Code snippets · key differentiators</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('code-modal-t4')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="c-t4-osshigh">OSS High *<span class="bm-tab-score" style="color:var(--red)">DNF</span></button>
+      <button class="bm-modal-tab" data-pane="c-t4-ossmed">OSS Med<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t4-gemma">Gemma<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t4-devstral">Devstral<span class="bm-tab-score">8</span></button>
+      <button class="bm-modal-tab" data-pane="c-t4-osslow">OSS Low<span class="bm-tab-score">7</span></button>
+      <button class="bm-modal-tab" data-pane="c-t4-codestral">Codestral<span class="bm-tab-score">4</span></button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="c-t4-osshigh">
+        <div class="bm-code-block"><div class="bm-code-label">OSS High — distributed lock + BFS cancel + fault tolerance</div><div class="bm-code-body"><span class="cm"># Distributed lock with SET NX PX</span>
+lock_key = <span class="st">f"job:{job_id}:lock"</span>
+acquired = <span class="kw">await</span> self.redis.set(
+    lock_key, <span class="st">"1"</span>, nx=<span class="kw">True</span>, px=<span class="nm">30000</span>
+)
+<span class="kw">if not</span> acquired:
+    <span class="kw">continue</span>  <span class="cm"># another worker has it</span>
+
+<span class="cm"># BFS cancellation</span>
+<span class="kw">async def</span> <span class="fn">cancel_job</span>(self, job_id: <span class="bi">str</span>) -> <span class="kw">None</span>:
+    queue = [job_id]
+    <span class="kw">while</span> queue:
+        jid = queue.pop(<span class="nm">0</span>)
+        <span class="kw">await</span> self.redis.hset(<span class="st">f"job:{jid}"</span>, <span class="st">"status"</span>, <span class="st">"cancelled"</span>)
+        children = <span class="kw">await</span> self.redis.smembers(<span class="st">f"job:{jid}:children"</span>)
+        queue.extend(children)
+
+<span class="cm"># Fault tolerance</span>
+<span class="kw">except</span> ConnectionError:
+    <span class="kw">await</span> asyncio.sleep(<span class="nm">1</span>)  <span class="cm"># lock expires, other worker picks up</span>
+<span class="kw">finally</span>:
+    <span class="kw">try</span>:
+        <span class="kw">await</span> self.redis.delete(lock_key)
+    <span class="kw">except Exception</span>:
+        <span class="kw">pass</span>  <span class="cm"># lock TTL will expire naturally</span>
+
+<span class="cm"># Status method</span>
+<span class="kw">async def</span> <span class="fn">status</span>(self, job_id: <span class="bi">str</span>) -> <span class="bi">str</span>:
+    data = <span class="kw">await</span> self.redis.hgetall(<span class="st">f"job:{job_id}"</span>)
+    total = <span class="bi">int</span>(data.get(<span class="st">"children_count"</span>, <span class="nm">0</span>)) + <span class="nm">1</span>
+    done = <span class="bi">int</span>(data.get(<span class="st">"completed_children"</span>, <span class="nm">0</span>))
+    <span class="kw">return</span> <span class="st">f"{done}/{total} subtasks done"</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t4-ossmed">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Medium — @async_retry + XREADGROUP</div><div class="bm-code-body"><span class="cm"># async_retry decorator wraps all Redis calls</span>
+<span class="kw">async def</span> <span class="fn">async_retry</span>(fn, retries=<span class="nm">3</span>, delay=<span class="nm">1.0</span>):
+    <span class="kw">for</span> attempt <span class="kw">in</span> range(retries):
+        <span class="kw">try</span>:
+            <span class="kw">return await</span> fn()
+        <span class="kw">except</span> aioredis.RedisError:
+            <span class="kw">if</span> attempt == retries - <span class="nm">1</span>: <span class="kw">raise</span>
+            <span class="kw">await</span> asyncio.sleep(delay * (<span class="nm">2</span> ** attempt))
+
+<span class="cm"># XREADGROUP consumer</span>
+msgs = <span class="kw">await</span> self.redis.xreadgroup(
+    self.group, self.consumer_id,
+    {self.stream: <span class="st">">"</span>}, count=<span class="nm">1</span>, block=<span class="nm">1000</span>
+)
+
+<span class="cm"># SET NX PX distributed lock</span>
+lock_acquired = <span class="kw">await</span> self.redis.set(
+    <span class="st">f"lock:{job_id}"</span>, self.consumer_id,
+    nx=<span class="kw">True</span>, px=<span class="nm">30_000</span>
+)</div></div>
+      </div>
+      <div class="bm-pane" id="c-t4-gemma">
+        <div class="bm-code-block"><div class="bm-code-label">Gemma — JobStatus enum + FAILED state + Redis revert</div><div class="bm-code-body"><span class="kw">from</span> enum <span class="kw">import</span> Enum
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, field
+
+<span class="kw">class</span> <span class="fn">JobStatus</span>(Enum):
+    PENDING = <span class="st">"pending"</span>
+    PROCESSING = <span class="st">"processing"</span>
+    COMPLETED = <span class="st">"completed"</span>
+    CANCELLED = <span class="st">"cancelled"</span>
+    FAILED = <span class="st">"failed"</span>  <span class="cm"># ← only model to add this</span>
+
+<span class="cm"># Redis failure reverts to PENDING</span>
+<span class="kw">except</span> aioredis.RedisError:
+    job.status = JobStatus.PENDING  <span class="cm"># ← correct: retry is possible</span>
+    <span class="kw">raise</span>
+
+<span class="cm"># BFS cancellation with pre-built graph</span>
+<span class="kw">async def</span> <span class="fn">cancel_job</span>(self, job_id: <span class="bi">str</span>):
+    queue = collections.deque([job_id])
+    <span class="kw">while</span> queue:
+        jid = queue.popleft()
+        self.jobs[jid].status = JobStatus.CANCELLED
+        queue.extend(self.children.get(jid, []))</div></div>
+      </div>
+      <div class="bm-pane" id="c-t4-devstral">
+        <div class="bm-code-block"><div class="bm-code-label">Devstral — SET NX+EX + async bug in status()</div><div class="bm-code-body"><span class="cm"># SET NX+EX for distributed claiming</span>
+claimed = <span class="kw">await</span> self.redis.set(
+    <span class="st">f"claim:{job_id}"</span>, worker_id,
+    nx=<span class="kw">True</span>, ex=<span class="nm">60</span>
+)
+
+<span class="kw">async def</span> <span class="fn">status</span>(self, job_id: <span class="bi">str</span>) -> <span class="bi">str</span>:
+    <span class="kw">with</span> self.lock:  <span class="er"># ✗ sync with — should be: async with self.lock</span>
+        total = self.child_counts.get(job_id, <span class="nm">0</span>) + <span class="nm">1</span>
+        done = self.completed_counts.get(job_id, <span class="nm">0</span>)
+        <span class="kw">return</span> <span class="st">f"{done}/{total} subtasks done"</span>
+
+<span class="cm"># BFS cancellation — correct</span>
+<span class="kw">async def</span> <span class="fn">cancel</span>(self, job_id: <span class="bi">str</span>):
+    queue = [job_id]
+    <span class="kw">while</span> queue:
+        jid = queue.pop()
+        self.statuses[jid] = <span class="st">"cancelled"</span>
+        queue.extend(self.children.get(jid, []))</div></div>
+      </div>
+      <div class="bm-pane" id="c-t4-osslow">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Low — asyncio.Lock only (no distributed)</div><div class="bm-code-body"><span class="kw">class</span> <span class="fn">JobScheduler</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, redis_url: <span class="bi">str</span>):
+        self._lock = asyncio.Lock()  <span class="er"># ✗ local-only — not distributed</span>
+        self._jobs = {}
+        self._children = defaultdict(<span class="bi">list</span>)
+        self._redis = <span class="kw">None</span>  <span class="cm"># lazy init</span>
+
+    <span class="kw">async def</span> <span class="fn">_ensure_redis</span>(self):
+        <span class="kw">if</span> self._redis <span class="kw">is None</span>:
+            self._redis = <span class="kw">await</span> aioredis.from_url(self.redis_url)
+
+    <span class="kw">async def</span> <span class="fn">status</span>(self, job_id: <span class="bi">str</span>) -> <span class="bi">str</span>:
+        <span class="kw">async with</span> self._lock:  <span class="cm"># ✓ async with here</span>
+            total = <span class="bi">len</span>(self._children[job_id]) + <span class="nm">1</span>
+            done = <span class="bi">sum</span>(<span class="nm">1</span> <span class="kw">for</span> c <span class="kw">in</span> self._children[job_id]
+                        <span class="kw">if</span> self._jobs.get(c, {}).get(<span class="st">"status"</span>) == <span class="st">"done"</span>)
+            <span class="kw">return</span> <span class="st">f"{done}/{total}"</span></div></div>
+      </div>
+      <div class="bm-pane" id="c-t4-codestral">
+        <div class="bm-code-block"><div class="bm-code-label">Codestral — sync Redis + deadlock pattern</div><div class="bm-code-body"><span class="kw">from</span> redis <span class="kw">import</span> Redis  <span class="er"># ✗ sync Redis in async context</span>
+<span class="kw">import</span> asyncio
+
+<span class="kw">class</span> <span class="fn">JobScheduler</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, redis_client: Redis):
+        self.redis = redis_client
+        self.lock = asyncio.Lock()
+
+    <span class="kw">async def</span> <span class="fn">status</span>(self, job_id):
+        <span class="kw">with</span> self.lock:  <span class="er"># ✗ sync with asyncio.Lock — deadlock</span>
+            ...
+
+    <span class="kw">async def</span> <span class="fn">process_job</span>(self, job):
+        <span class="kw">await</span> self.lock.acquire()
+        <span class="kw">try</span>:
+            ...
+        <span class="kw">finally</span>:
+            <span class="kw">async with</span> self.lock:  <span class="er"># ✗ re-acquires already held lock — deadlock</span>
+                ...
+            self.lock.release()</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T5 Code Modal -->
+<div class="bm-modal" id="code-modal-t5">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T5 — Retry Decorator · Code Comparison</div>
+        <div class="bm-modal-type">Code output · key differentiators</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('code-modal-t5')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="c-t5-osshigh">OSS High *<span class="bm-tab-score">9*</span></button>
+      <button class="bm-modal-tab" data-pane="c-t5-ossmed">OSS Med<span class="bm-tab-score">9</span></button>
+      <button class="bm-modal-tab" data-pane="c-t5-gemma">Gemma<span class="bm-tab-score">8</span></button>
+      <button class="bm-modal-tab" data-pane="c-t5-devstral">Devstral<span class="bm-tab-score">7</span></button>
+      <button class="bm-modal-tab" data-pane="c-t5-codestral">Codestral<span class="bm-tab-score">6</span></button>
+      <button class="bm-modal-tab" data-pane="c-t5-lfm2">LFM2<span class="bm-tab-score">3</span></button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="c-t5-osshigh">
+        <div class="bm-code-block"><div class="bm-code-label">OSS High — __signature__, jitter, on_exception callback</div><div class="bm-code-body"><span class="kw">import</span> inspect, time, asyncio, random, functools
+
+<span class="kw">def</span> <span class="fn">retry</span>(*, max_attempts=<span class="nm">3</span>, initial_delay=<span class="nm">0.1</span>, backoff_factor=<span class="nm">2.0</span>,
+         jitter=<span class="kw">False</span>, exceptions=(<span class="bi">Exception</span>,), on_exception=<span class="kw">None</span>):
+    <span class="kw">def</span> <span class="fn">decorator</span>(func):
+        <span class="kw">if</span> inspect.iscoroutinefunction(func):
+            @functools.wraps(func)
+            <span class="kw">async def</span> <span class="fn">async_wrapper</span>(*args, **kwargs):
+                delay = initial_delay
+                <span class="kw">for</span> attempt <span class="kw">in</span> range(<span class="nm">1</span>, max_attempts + <span class="nm">1</span>):
+                    <span class="kw">try</span>:
+                        <span class="kw">return await</span> func(*args, **kwargs)
+                    <span class="kw">except</span> exceptions <span class="kw">as</span> exc:
+                        <span class="kw">if</span> attempt == max_attempts: <span class="kw">raise</span>
+                        <span class="kw">if</span> on_exception: on_exception(exc, attempt)
+                        <span class="kw">await</span> asyncio.sleep(
+                            delay + (random.random() <span class="kw">if</span> jitter <span class="kw">else</span> <span class="nm">0</span>)
+                        )
+                        delay *= backoff_factor
+            async_wrapper.__signature__ = inspect.signature(func)  <span class="cm"># ← preserves sig</span>
+            async_wrapper.__annotations__ = func.__annotations__    <span class="cm"># ← preserves types</span>
+            <span class="kw">return</span> async_wrapper
+        <span class="kw">else</span>:
+            @functools.wraps(func)
+            <span class="kw">def</span> <span class="fn">sync_wrapper</span>(*args, **kwargs):
+                delay = initial_delay
+                <span class="kw">for</span> attempt <span class="kw">in</span> range(<span class="nm">1</span>, max_attempts + <span class="nm">1</span>):
+                    <span class="kw">try</span>:
+                        <span class="kw">return</span> func(*args, **kwargs)
+                    <span class="kw">except</span> exceptions <span class="kw">as</span> exc:
+                        <span class="kw">if</span> attempt == max_attempts: <span class="kw">raise</span>
+                        time.sleep(delay + (random.random() <span class="kw">if</span> jitter <span class="kw">else</span> <span class="nm">0</span>))
+                        delay *= backoff_factor
+            sync_wrapper.__signature__ = inspect.signature(func)
+            sync_wrapper.__annotations__ = func.__annotations__
+            <span class="kw">return</span> sync_wrapper
+    <span class="kw">return</span> decorator</div></div>
+      </div>
+      <div class="bm-pane" id="c-t5-ossmed">
+        <div class="bm-code-block"><div class="bm-code-label">OSS Medium — @overload, both @retry and @retry() forms</div><div class="bm-code-body"><span class="kw">import</span> inspect, functools, asyncio, time
+<span class="kw">from</span> typing <span class="kw">import</span> overload
+
+<span class="kw">def</span> <span class="fn">retry</span>(func=<span class="kw">None</span>, *, max_attempts=<span class="nm">3</span>, delay=<span class="nm">0.1</span>, backoff=<span class="nm">2.0</span>, exceptions=(<span class="bi">Exception</span>,)):
+    <span class="cm"># supports both @retry and @retry(max_attempts=5)</span>
+    <span class="kw">if</span> func <span class="kw">is not None</span>:
+        <span class="kw">return</span> <span class="fn">retry</span>()(func)  <span class="cm"># called as @retry</span>
+
+    <span class="kw">def</span> <span class="fn">decorator</span>(f):
+        <span class="kw">if</span> inspect.iscoroutinefunction(f):
+            @functools.wraps(f)
+            <span class="kw">async def</span> <span class="fn">wrapper</span>(*a, **kw):
+                d = delay
+                <span class="kw">for</span> i <span class="kw">in</span> range(max_attempts):
+                    <span class="kw">try</span>: <span class="kw">return await</span> f(*a, **kw)
+                    <span class="kw">except</span> exceptions:
+                        <span class="kw">if</span> i == max_attempts - <span class="nm">1</span>: <span class="kw">raise</span>
+                        <span class="kw">await</span> asyncio.sleep(d); d *= backoff
+        <span class="kw">else</span>:
+            @functools.wraps(f)
+            <span class="kw">def</span> <span class="fn">wrapper</span>(*a, **kw):
+                d = delay
+                <span class="kw">for</span> i <span class="kw">in</span> range(max_attempts):
+                    <span class="kw">try</span>: <span class="kw">return</span> f(*a, **kw)
+                    <span class="kw">except</span> exceptions:
+                        <span class="kw">if</span> i == max_attempts - <span class="nm">1</span>: <span class="kw">raise</span>
+                        time.sleep(d); d *= backoff
+        wrapper.__signature__ = inspect.signature(f)
+        wrapper.__annotations__ = f.__annotations__
+        <span class="kw">return</span> wrapper
+    <span class="kw">return</span> decorator</div></div>
+      </div>
+      <div class="bm-pane" id="c-t5-gemma">
+        <div class="bm-code-block"><div class="bm-code-label">Gemma — only model using ParamSpec</div><div class="bm-code-body"><span class="kw">from</span> typing <span class="kw">import</span> ParamSpec, TypeVar
+<span class="kw">import</span> functools, inspect, time, asyncio
+
+P = ParamSpec(<span class="st">'P'</span>)
+R = TypeVar(<span class="st">'R'</span>)
+
+<span class="kw">def</span> <span class="fn">retry</span>(max_retries=<span class="nm">3</span>, delay=<span class="nm">1.0</span>, backoff=<span class="nm">2.0</span>, jitter=<span class="kw">True</span>):
+    <span class="kw">def</span> <span class="fn">decorator</span>(func):
+        <span class="kw">if</span> inspect.iscoroutinefunction(func):
+            @functools.wraps(func)
+            <span class="kw">async def</span> <span class="fn">async_wrapper</span>(*args: P.args, **kwargs: P.kwargs) -> R:
+                d = delay
+                <span class="kw">for</span> attempt <span class="kw">in</span> range(max_retries):
+                    <span class="kw">try</span>:
+                        <span class="kw">return await</span> func(*args, **kwargs)
+                    <span class="kw">except</span> <span class="bi">Exception</span> <span class="kw">as</span> e:
+                        <span class="kw">if</span> attempt == max_retries - <span class="nm">1</span>: <span class="kw">raise</span>
+                        <span class="kw">await</span> asyncio.sleep(
+                            d + (random.random() * d <span class="kw">if</span> jitter <span class="kw">else</span> <span class="nm">0</span>)
+                        )
+                        d *= backoff
+            <span class="kw">return</span> async_wrapper
+        <span class="kw">else</span>:
+            @functools.wraps(func)
+            <span class="kw">def</span> <span class="fn">sync_wrapper</span>(*args: P.args, **kwargs: P.kwargs) -> R:
+                d = delay
+                <span class="kw">for</span> attempt <span class="kw">in</span> range(max_retries):
+                    <span class="kw">try</span>:
+                        <span class="kw">return</span> func(*args, **kwargs)
+                    <span class="kw">except</span> <span class="bi">Exception</span> <span class="kw">as</span> e:
+                        <span class="kw">if</span> attempt == max_retries - <span class="nm">1</span>: <span class="kw">raise</span>
+                        time.sleep(d); d *= backoff
+            <span class="kw">return</span> sync_wrapper
+    <span class="kw">return</span> decorator</div></div>
+      </div>
+      <div class="bm-pane" id="c-t5-devstral">
+        <div class="bm-code-block"><div class="bm-code-label">Devstral — retry_on_result bonus, no explicit __signature__</div><div class="bm-code-body"><span class="kw">import</span> functools, asyncio, time, inspect
+
+<span class="kw">def</span> <span class="fn">retry</span>(max_attempts=<span class="nm">3</span>, delay=<span class="nm">0.5</span>, backoff=<span class="nm">2</span>,
+         exceptions=(<span class="bi">Exception</span>,), retry_on_result=<span class="kw">None</span>):
+    <span class="kw">def</span> <span class="fn">decorator</span>(func):
+        <span class="kw">if</span> asyncio.iscoroutinefunction(func):
+            @functools.wraps(func)
+            <span class="kw">async def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+                d = delay
+                <span class="kw">for</span> attempt <span class="kw">in</span> range(max_attempts):
+                    <span class="kw">try</span>:
+                        result = <span class="kw">await</span> func(*args, **kwargs)
+                        <span class="kw">if</span> retry_on_result <span class="kw">and</span> retry_on_result(result):
+                            <span class="kw">if</span> attempt == max_attempts - <span class="nm">1</span>: <span class="kw">return</span> result
+                            <span class="kw">await</span> asyncio.sleep(d); d *= backoff; <span class="kw">continue</span>
+                        <span class="kw">return</span> result
+                    <span class="kw">except</span> exceptions:
+                        <span class="kw">if</span> attempt == max_attempts - <span class="nm">1</span>: <span class="kw">raise</span>
+                        <span class="kw">await</span> asyncio.sleep(d); d *= backoff
+        <span class="kw">else</span>:
+            @functools.wraps(func)
+            <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+                d = delay
+                <span class="kw">for</span> attempt <span class="kw">in</span> range(max_attempts):
+                    <span class="kw">try</span>:
+                        <span class="kw">return</span> func(*args, **kwargs)
+                    <span class="kw">except</span> exceptions:
+                        <span class="kw">if</span> attempt == max_attempts - <span class="nm">1</span>: <span class="kw">raise</span>
+                        time.sleep(d); d *= backoff
+        <span class="cm"># ✗ no explicit __signature__ set</span>
+        <span class="kw">return</span> wrapper
+    <span class="kw">return</span> decorator</div></div>
+      </div>
+      <div class="bm-pane" id="c-t5-codestral">
+        <div class="bm-code-block"><div class="bm-code-label">Codestral — retry increments in finally (counts successes)</div><div class="bm-code-body"><span class="kw">import</span> asyncio, functools, time
+
+<span class="kw">def</span> <span class="fn">retry</span>(max_retries=<span class="nm">3</span>, delay=<span class="nm">1</span>):
+    <span class="kw">def</span> <span class="fn">decorator</span>(func):
+        @functools.wraps(func)
+        <span class="kw">async def</span> <span class="fn">async_wrapper</span>(*args, **kwargs):
+            retries = <span class="nm">0</span>
+            <span class="kw">while</span> retries < max_retries:
+                <span class="kw">try</span>:
+                    <span class="kw">return await</span> func(*args, **kwargs)
+                <span class="kw">except Exception</span> <span class="kw">as</span> e:
+                    retries += <span class="nm">1</span>
+                    <span class="kw">if</span> retries >= max_retries: <span class="kw">raise</span>
+                    <span class="kw">await</span> asyncio.sleep(delay * (<span class="nm">2</span> ** retries))
+                <span class="kw">finally</span>:
+                    retries += <span class="nm">1</span>  <span class="er"># ✗ increments on SUCCESS too</span>
+
+        @functools.wraps(func)
+        <span class="kw">def</span> <span class="fn">sync_wrapper</span>(*args, **kwargs):
+            retries = <span class="nm">0</span>
+            <span class="kw">while</span> retries < max_retries:
+                <span class="kw">try</span>:
+                    <span class="kw">return</span> func(*args, **kwargs)
+                <span class="kw">except Exception</span>:
+                    retries += <span class="nm">1</span>
+                    <span class="kw">if</span> retries >= max_retries: <span class="kw">raise</span>
+                    time.sleep(delay * (<span class="nm">2</span> ** retries))
+                <span class="kw">finally</span>:
+                    retries += <span class="nm">1</span>  <span class="er"># ✗ same bug</span>
+
+        <span class="kw">if</span> asyncio.iscoroutinefunction(func): <span class="kw">return</span> async_wrapper
+        <span class="kw">return</span> sync_wrapper
+    <span class="kw">return</span> decorator</div></div>
+      </div>
+      <div class="bm-pane" id="c-t5-lfm2">
+        <div class="bm-code-block"><div class="bm-code-label">LFM2 — 4 crash-level bugs</div><div class="bm-code-body"><span class="kw">import</span> functools, asyncio, time
+
+<span class="kw">def</span> <span class="fn">retry</span>(max_retries=<span class="nm">3</span>, delay=<span class="nm">1</span>, backoff=<span class="nm">2</span>):
+    <span class="kw">def</span> <span class="fn">decorator</span>(func):
+        <span class="kw">async def</span> <span class="fn">sync_wrapper</span>(*args, **kwargs):  <span class="er"># ✗ async def for sync branch</span>
+            retries = <span class="nm">0</span>
+            <span class="kw">while</span> retries < max_retries:
+                <span class="kw">try</span>:
+                    <span class="kw">return</span> func(*args, **kwargs)
+                <span class="kw">except Exception</span> <span class="kw">as</span> e:
+                    retries += <span class="nm">1</span>
+                    new_delay = <span class="nm">min</span>(delay * <span class="nm">2</span>, max_delable)  <span class="er"># ✗ NameError: max_delable</span>
+                    time.sleep(new_delay)
+
+        <span class="kw">def</span> <span class="fn">_retry</span>(*args, **kwargs):  <span class="er"># ✗ defined after return statement</span>
+            ...
+
+        <span class="kw">if</span> asyncio.iscoroutinefunction(func):
+            <span class="kw">return</span> async_wrapper
+        <span class="kw">return</span> sync_wrapper
+
+    <span class="kw">return</span> decorator  <span class="er"># ✗ _retry defined below this line</span>
+
+    <span class="kw">def</span> <span class="fn">_retry</span>(e, attempt):
+        <span class="kw">raise</span> e <span class="kw">from</span> <span class="bi">type</span>(e)  <span class="er"># ✗ invalid: type(e) is a class not instance</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     THINKING MODALS
+     ══════════════════════════════════════════════════════ -->
+
+<!-- T1 Thinking Modal -->
+<div class="bm-modal think-modal" id="think-modal-t1">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T1 — FIM YAML · Model Reasoning</div>
+        <div class="bm-modal-type think">Thinking summaries</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('think-modal-t1')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="th-t1-osshigh">OSS High *</button>
+      <button class="bm-modal-tab" data-pane="th-t1-ossmed">OSS Med</button>
+      <button class="bm-modal-tab" data-pane="th-t1-gemma">Gemma</button>
+      <button class="bm-modal-tab" data-pane="th-t1-devstral">Devstral</button>
+      <button class="bm-modal-tab" data-pane="th-t1-osslow">OSS Low</button>
+      <button class="bm-modal-tab" data-pane="th-t1-codestral">Codestral</button>
+      <button class="bm-modal-tab" data-pane="th-t1-lfm2">LFM2</button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="th-t1-osshigh">
+        <div class="bm-verdict-pill win">* 9/10 · Strong</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Analysis block exposed full decision-making.</strong> The model reasoned through whether to use pathlib vs bare open, decided pathlib was cleaner. Explicitly considered the empty-file edge case and chose <code>yaml.safe_load(f) or {}</code> to return an empty dict rather than None.</p>
+            <p>Compared two approaches for missing-key validation: a for-loop versus a list comprehension collecting all missing keys at once. Chose the comprehension specifically because it surfaces <em>all</em> missing keys in one error message rather than stopping at the first. "More useful to the caller" — that's production thinking.</p>
+            <p>The model also drafted two alternative implementations (with/without pathlib, with/without set-based check) before settling. That deliberateness is exactly what you'd want from a code reviewer.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t1-ossmed">
+        <div class="bm-verdict-pill win">9/10 · Strong</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Focused on portability and type safety.</strong> Made an early decision to use <code>pathlib.Path</code> over <code>os.path</code> for more expressive path handling. Added type validation for <code>host</code>, <code>port</code>, and <code>database</code> fields — reasoning that a config parser should validate values, not just key presence.</p>
+            <p>The set-difference approach to missing keys (<code>required - config.keys()</code>) was deliberate — cleaner than iterating, surfaces all missing keys atomically. The model added NumPy-style docstrings without being asked, which reflects its bias toward comprehensive outputs.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t1-gemma">
+        <div class="bm-verdict-pill mid">9/10 · Strong with caveat</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Interpreted FIM as "write the full function" — confident in its scope expansion.</strong> Instead of filling just the gap, Gemma rewrote the entire function with imports, then added a self-test block that creates a dummy YAML file, runs the parser, and cleans up with <code>finally</code>. This shows deep initiative but is out of scope for FIM.</p>
+            <p>The null-value check (<code>config[key] is None</code>) was a genuine insight — checking that a key exists <em>and</em> isn't set to null is something the other models missed. However, raising <code>TypeError</code> for a YAML parse error is debatable. Gemma raises <code>TypeError</code> where most would raise <code>ValueError</code> or re-raise <code>yaml.YAMLError</code>.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t1-devstral">
+        <div class="bm-verdict-pill win">8/10 · Correct FIM discipline</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Understood the FIM constraint and respected it.</strong> Devstral filled only the gap between prefix and suffix — no imports outside the context, no rewrites, no test harness. Just the body. This is correct FIM discipline: fill the middle, don't rewrite the function.</p>
+            <p>The tradeoff is that it missed <code>FileNotFoundError</code> handling (since it only filled inside the function body where the file was already assumed open). The error message "Missing required configuration key" was slightly better phrased than competitors.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t1-osslow">
+        <div class="bm-verdict-pill win">9/10 · Strong</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Similar reasoning to Medium but with less depth.</strong> Chose pathlib, caught both FileNotFoundError and YAMLError, validated that config was actually a dict (not just truthy), and used set-difference for missing keys. Added type checks for host, port, database fields.</p>
+            <p>The dict isinstance check — <code>if not isinstance(config, dict)</code> — is a subtle guard that Medium missed but Low included. Tied with Medium on T1 despite lower overall score, which shows T1 is where OSS Low performs closest to its ceiling.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t1-codestral">
+        <div class="bm-verdict-pill mid">7/10 · Functional, no initiative</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Minimal reasoning — delivered the minimum working answer.</strong> Codestral treated this as a pure autocomplete task: fill in the gap, return. No analysis of edge cases, no consideration of what callers might need. The imports were placed outside the FIM context, which breaks the fill-in-middle premise.</p>
+            <p>No handling for file-not-found, no null checks, no alternative approaches considered. The output is functional in the happy path but fails on any error condition. This is exactly what you'd expect from a model trained primarily on autocomplete rather than reasoning.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t1-lfm2">
+        <div class="bm-verdict-pill low">3/10 · Crash-level bugs</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>No apparent reasoning about edge cases.</strong> LFM2 repeated the required_keys list twice in the output, suggesting it lost track of context mid-generation. The <code>__name__ == "main"</code> string literal (missing underscores) is a typo that would silently never run the main block.</p>
+            <p>Most critically, instead of raising an error for missing keys, the code sets them to <code>None</code> — exactly the wrong behavior. A config parser that silently accepts invalid configs is worse than one that crashes loudly. Speed is LFM2's only win, and speed without correctness is failing faster.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T2 Thinking Modal -->
+<div class="bm-modal think-modal" id="think-modal-t2">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T2 — Async Refactor · Model Reasoning</div>
+        <div class="bm-modal-type think">Thinking summaries</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('think-modal-t2')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="th-t2-osshigh">OSS High *</button>
+      <button class="bm-modal-tab" data-pane="th-t2-ossmed">OSS Med</button>
+      <button class="bm-modal-tab" data-pane="th-t2-gemma">Gemma</button>
+      <button class="bm-modal-tab" data-pane="th-t2-devstral">Devstral</button>
+      <button class="bm-modal-tab" data-pane="th-t2-codestral">Codestral</button>
+      <button class="bm-modal-tab" data-pane="th-t2-lfm2">LFM2</button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="th-t2-osshigh">
+        <div class="bm-verdict-pill win">* 10/10 · Perfect</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Decomposed the problem into responsibilities before writing a line of code.</strong> The thinking block identified four distinct concerns: URL construction, HTTP transport, JSON parsing, and business logic extraction. Each became its own function. This isn't typical model output — this is how a senior engineer thinks.</p>
+            <p>Explicitly chose to apply <code>ClientTimeout</code> at the session level rather than per-request, noting that "session-level timeout applies to all requests, which is cleaner when you only make one." The <code>raise_for_status()</code> call was explicitly justified: "callers should handle HTTP errors, not receive None silently." That's an API design decision, not just a coding choice.</p>
+            <p>The NumPy-style docstrings were added without prompting, with Parameters/Returns sections for every function. This is the only model in the set that documented its own output at this level.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t2-ossmed">
+        <div class="bm-verdict-pill win">9/10 · Strong</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Chose httpx over aiohttp deliberately.</strong> The model reasoned that httpx's API is cleaner for "separation of concerns" because the timeout is naturally applied at the client level. It split the refactor into three functions, matching the prompt's "separate concerns" instruction closely.</p>
+            <p>Added <code>raise_for_status()</code> reasoning: "returning None for a 404 swallows the error — callers deserve to know the difference between a missing user and a network failure." Clean architectural thinking that sets it apart from models that just don't check HTTP status.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t2-gemma">
+        <div class="bm-verdict-pill win">9/10 · Over-engineered but correct</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Enumerated 6 exception types and built handlers for each.</strong> The model reasoned that <code>InvalidURL</code>, <code>ClientConnectorError</code>, <code>TimeoutError</code>, <code>ClientResponseError</code>, and unexpected exceptions all require different responses. Technically correct — but excessive for a refactoring task.</p>
+            <p>The constant <code>USER_STATUS_ACTIVE = "active"</code> was extracted as a deliberate signal: "magic strings are a code smell." The main flaw was marking <code>_validate_and_extract_profile</code> as <code>async def</code> despite having no awaits inside — a copy-paste habit that reveals the model didn't re-examine its own structure.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t2-devstral">
+        <div class="bm-verdict-pill win">9/10 · Production-ready</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>The most readable aiohttp implementation in the set.</strong> Devstral reasoned that the original function mixed concerns — fetching and parsing — and split them cleanly into <code>fetch_user</code> and <code>parse_user</code>. The <code>ClientTimeout(total=timeout)</code> correction was applied correctly, and <code>response.ok</code> was checked before JSON parsing.</p>
+            <p>Two specific exception types caught: <code>aiohttp.ClientError</code> and <code>asyncio.TimeoutError</code>. Less granular than Gemma's 6 types, but more appropriate for a refactoring task where the caller should be signalled of failure, not the implementation details.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t2-codestral">
+        <div class="bm-verdict-pill low">5/10 · Runtime failure</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Got the architecture right, got the API wrong.</strong> Codestral correctly identified that the function should be split into fetch and parse layers. It even used aiohttp. But it passed a plain integer as the timeout parameter — <code>timeout=timeout</code> — when aiohttp requires a <code>ClientTimeout</code> object. This causes a <code>ValueError</code> at runtime, not a subtle bug but an immediate crash.</p>
+            <p>The bare <code>except Exception</code> swallows all errors including the timeout crash itself. The architecture was the best of the three Mistral outputs, but it couldn't survive contact with reality. This is the classic "looks like it works" failure mode.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t2-lfm2">
+        <div class="bm-verdict-pill low">5/10 · NameError</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Broke the public API by requiring callers to pass a session.</strong> LFM2 extracted the HTTP call into a separate function but required callers to manage the aiohttp session — which means callers can't use the simple <code>fetch_user_data(user_id, url)</code> interface. It referenced <code>json.JSONDecodeError</code> without importing <code>json</code>, which is a NameError on any non-200 response with a non-JSON body.</p>
+            <p>The intention was right but the execution had multiple integration failures. LFM2 consistently produces code that looks structurally correct at a glance but fails on import or at runtime.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T3 Thinking Modal -->
+<div class="bm-modal think-modal" id="think-modal-t3">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T3 — Race Condition · Model Reasoning</div>
+        <div class="bm-modal-type think">Thinking summaries</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('think-modal-t3')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="th-t3-osshigh">OSS High *</button>
+      <button class="bm-modal-tab" data-pane="th-t3-ossmed">OSS Med</button>
+      <button class="bm-modal-tab" data-pane="th-t3-devstral">Devstral</button>
+      <button class="bm-modal-tab" data-pane="th-t3-osslow">OSS Low</button>
+      <button class="bm-modal-tab" data-pane="th-t3-codestral">Codestral</button>
+      <button class="bm-modal-tab" data-pane="th-t3-gemma">Gemma</button>
+      <button class="bm-modal-tab" data-pane="th-t3-lfm2">LFM2</button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="th-t3-osshigh">
+        <div class="bm-verdict-pill win">* 9/10 · Multi-solution</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Compared 4 distinct approaches in the analysis block before committing.</strong> The thinking explicitly walked through: (1) global lock with double-check, (2) per-key lock via <code>defaultdict</code>, (3) <code>setdefault</code> atomic write, (4) future-based cache. Each was evaluated against "does fetch happen under lock?" as the key criterion.</p>
+            <p>The final solution used global lock for the read-check, then computed outside the lock, then used <code>setdefault</code> for an atomic write — elegantly avoiding a fetch-under-lock. The per-key lock alternative was included as a bonus with a brief trade-off note: "more granularity, slightly more memory." This is the kind of analysis you'd expect in a code review, not a chatbot.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t3-ossmed">
+        <div class="bm-verdict-pill win">9/10 · 3 solutions</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Delivered three complete solutions with a trade-off table.</strong> Solution 1: per-key lock (simple, correct). Solution 2: Future-based cache (prevents duplicate fetches entirely — no wasted compute). Solution 3: asyncio.Event for async context. Each came with a plain-English note on when to use it.</p>
+            <p>The Future-based approach is non-trivial: when a key is first requested, a Future is stored; subsequent requests <em>await</em> that Future instead of triggering a second fetch. This eliminates duplicate fetch work entirely, not just the race condition. No other model offered this pattern.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t3-devstral">
+        <div class="bm-verdict-pill win">9/10 · Named the pattern</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Identified and named the pattern explicitly before implementing it.</strong> Devstral stated "This pattern is known as double-checked locking" — naming it first, then implementing it. This demonstrates conceptual understanding, not just pattern matching. The explanation of <em>why</em> the double-check is needed after lock acquisition was the clearest of any model: "another thread may have filled the cache while we waited for the lock."</p>
+            <p>The efficiency analysis noted that cache hits take the fast path with no lock overhead. That's the correct way to evaluate this solution — lock contention only occurs on cache misses, which should be rare after warmup.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t3-osslow">
+        <div class="bm-verdict-pill win">8/10 · Practical</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Went straight to per-key locking without considering alternatives.</strong> OSS Low's reasoning was more direct: identified the race condition, chose per-key locks as the clean solution, implemented it. The per-key approach is actually more scalable than a global lock (unrelated keys don't contend), but the model didn't articulate this — it just wrote it.</p>
+            <p>The Future-based cache was included as a bonus after the main solution. Points deducted purely for not naming the pattern or explaining the reasoning behind key-per-lock granularity.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t3-codestral">
+        <div class="bm-verdict-pill win">8/10 · Correct, minimal explanation</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Produced the correct fix with a clear explanation of the race.</strong> Codestral explained that "if multiple concurrent requests are made for a key that's not in the cache, each will trigger fetch_fn(key)" — accurate diagnosis. The fix used double-checked locking correctly. Points deducted only for not offering alternative approaches or naming the pattern.</p>
+            <p>This was Codestral's best task performance in the benchmark. T3 plays to its strengths: a well-understood pattern with a known correct answer. Tasks that require more open-ended reasoning (T4, T5) exposed deeper weaknesses.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t3-gemma">
+        <div class="bm-verdict-pill low">6/10 · Correct diagnosis, wrong fix</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Gave the clearest Thread A/B walkthrough of any model, then implemented the wrong fix.</strong> Gemma's explanation of the race condition was genuinely excellent — step by step, with Thread A and Thread B interleaved. The asyncio.Lock alternative also showed breadth of knowledge.</p>
+            <p>But the fix locked the entire function including <code>fetch_fn(key)</code>. This means every thread waits while one thread fetches — which can take seconds for a remote call. The original race condition is fixed, but the cache is now a bottleneck. Gemma explained the race better than anyone, then serialised all threads instead of just the critical section. Confidence can mask incorrectness.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t3-lfm2">
+        <div class="bm-verdict-pill low">3/10 · Syntax error</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>The per-key lock idea was conceptually sound, but the implementation was syntactically broken.</strong> Using <code>async with</code> inside a synchronous <code>def</code> is a <code>SyntaxError</code>. The <code>defaultdict(asyncio.Lock)</code> also creates an event loop issue — <code>asyncio.Lock()</code> must be created from within a running event loop.</p>
+            <p>LFM2 reached for the right tool (per-key locks) but failed at the execution layer. The model understood the problem; it just couldn't translate the understanding into working code.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T4 Thinking Modal -->
+<div class="bm-modal think-modal" id="think-modal-t4">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T4 — JobScheduler · Model Reasoning</div>
+        <div class="bm-modal-type think">Thinking summaries</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('think-modal-t4')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="th-t4-osshigh">OSS High *</button>
+      <button class="bm-modal-tab" data-pane="th-t4-ossmed">OSS Med</button>
+      <button class="bm-modal-tab" data-pane="th-t4-gemma">Gemma</button>
+      <button class="bm-modal-tab" data-pane="th-t4-devstral">Devstral</button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="th-t4-osshigh">
+        <div class="bm-verdict-pill low">* DNF in original run · 9* projected</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">What the thinking block showed</div>
+          <div class="bm-think-body">
+            <p><strong>The thinking block on T4 ran to ~1000 lines before the model committed.</strong> It enumerated: data model design, Redis key schema, locking strategy, cancellation traversal algorithm, status aggregation approach, fault tolerance patterns, and async design trade-offs. Every decision was reasoned from first principles.</p>
+            <p>The spiral: the model kept surfacing new edge cases. "What if Redis is down when we try to release the lock?" → designs a TTL-based release. "What if a child job gets enqueued after cancel is called?" → adds a pre-flight status check. "What if two workers race on XREADGROUP?" → adds SET NX PX. Each solution spawned new questions. The model understood the problem at a depth that made it unable to stop finding things to handle.</p>
+            <p><strong>The final output (when it eventually committed) was excellent</strong> — SET NX PX distributed lock, XREADGROUP consumer, BFS cancellation, ConnectionError wrapping. But getting there required an extremely long thinking budget that wasn't available in the original run context.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t4-ossmed">
+        <div class="bm-verdict-pill win">9/10 · Systematic</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Built a robust architecture with an @async_retry decorator wrapping all Redis calls.</strong> The key insight was treating Redis unavailability as a first-class concern from the start — not an afterthought. The decorator pattern meant every Redis operation automatically retried with exponential backoff.</p>
+            <p>SET NX PX for distributed locking, XREADGROUP for exactly-once consumer semantics, Redis sets for parent→children tracking. Minor fault: referenced <code>aioredis.errors</code> instead of <code>aioredis.exceptions</code> — API version mismatch that would surface at import time.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t4-gemma">
+        <div class="bm-verdict-pill win">9/10 · Production structure</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>The only model to introduce a FAILED state.</strong> Gemma reasoned that a job that encounters an unrecoverable error should be marked FAILED, not just left in PROCESSING or silently cancelled. This is correct production thinking — operators need to distinguish "cancelled by user" from "failed due to bug."</p>
+            <p>The Redis failure revert-to-PENDING behavior was also uniquely correct: when Redis goes down mid-job, reverting to PENDING allows the job to be retried by another worker. Most models either crashed or left the job in PROCESSING indefinitely. The O(N²) dependency graph was acknowledged as a limitation but accepted for prototype scope.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t4-devstral">
+        <div class="bm-verdict-pill mid">8/10 · Right architecture, API slip</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Correct distributed lock (SET NX+EX), correct BFS cancellation, correct XREADGROUP usage.</strong> Devstral understood the architecture at a high level — the bugs were implementation-level, not conceptual. Using <code>with self.lock</code> instead of <code>async with self.lock</code> in an async method is the kind of error that passes a cursory read but fails immediately at runtime.</p>
+            <p>Similarly, calling <code>_init_redis()</code> without <code>await</code> in <code>__init__</code> — a classic async initialization footgun. The model knew it needed Redis, it just forgot the await. These are API-familiarity errors, not reasoning failures.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T5 Thinking Modal -->
+<div class="bm-modal think-modal" id="think-modal-t5">
+  <div class="bm-modal-inner">
+    <div class="bm-modal-header">
+      <div>
+        <div class="bm-modal-title">T5 — Retry Decorator · Model Reasoning</div>
+        <div class="bm-modal-type think">Thinking summaries</div>
+      </div>
+      <button class="bm-modal-close" onclick="closeModal('think-modal-t5')">✕ Close</button>
+    </div>
+    <div class="bm-modal-tabs">
+      <button class="bm-modal-tab active" data-pane="th-t5-osshigh">OSS High *</button>
+      <button class="bm-modal-tab" data-pane="th-t5-ossmed">OSS Med</button>
+      <button class="bm-modal-tab" data-pane="th-t5-gemma">Gemma</button>
+      <button class="bm-modal-tab" data-pane="th-t5-devstral">Devstral</button>
+      <button class="bm-modal-tab" data-pane="th-t5-codestral">Codestral</button>
+      <button class="bm-modal-tab" data-pane="th-t5-lfm2">LFM2</button>
+    </div>
+    <div class="bm-modal-body">
+      <div class="bm-pane active" id="th-t5-osshigh">
+        <div class="bm-verdict-pill win">* 9/10 projected · separate run</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process (from separate run)</div>
+          <div class="bm-think-body">
+            <p><strong>Identified all three traps in the thinking block.</strong> The analysis explicitly called out: (1) async detection — must use <code>inspect.iscoroutinefunction</code> not <code>asyncio.iscoroutinefunction</code> because the latter doesn't handle wrapped functions correctly; (2) signature preservation — <code>functools.wraps</code> alone is insufficient, must set <code>__signature__</code> explicitly; (3) descriptor protocol — standard function wrappers already support descriptors via <code>__get__</code>, so this is handled for free.</p>
+            <p>The model also correctly identified that <code>wrapper.__annotations__ = func.__annotations__</code> is needed separately from <code>functools.wraps</code> because wraps doesn't copy annotations in all Python versions. Added jitter and <code>on_exception</code> callback as non-prompted bonuses, reasoning that they're needed in any real-world retry decorator.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t5-ossmed">
+        <div class="bm-verdict-pill win">9/10 · Most complete</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>The only model to support both @retry and @retry() syntax.</strong> The design used a sentinel pattern: if <code>func</code> is not None, it was called as <code>@retry</code> (no args); if None, as <code>@retry(max_attempts=5)</code>. This is a non-obvious implementation detail that Medium got right without prompting.</p>
+            <p>Added <code>@overload</code> for static type checker support — the first model to consider that typed codebases need the decorator to work with mypy/pyright. Verified class method behavior with <code>inspect.signature()</code> as part of the example code. No ParamSpec was the only gap.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t5-gemma">
+        <div class="bm-verdict-pill win">8/10 · Only ParamSpec user</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>The only model to correctly use <code>ParamSpec</code> for precise type preservation.</strong> Gemma imported <code>ParamSpec</code> and <code>TypeVar</code> from typing, used <code>P = ParamSpec('P')</code> and <code>R = TypeVar('R')</code>. This means the decorated function's parameter types are preserved for type checkers — the gold standard for decorator type annotations.</p>
+            <p>The jitter implementation was also correct: <code>random.random() * d</code> added to the backoff delay, avoiding thundering herd on retry storms. Deducted points for: no explicit <code>__signature__</code> set (relying on wraps alone), and asyncio imported inside the decorator body but referenced in the wrapper — would raise NameError if asyncio wasn't in scope at decoration time.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t5-devstral">
+        <div class="bm-verdict-pill mid">7/10 · Bonus feature, missing signature</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Added a <code>retry_on_result</code> callback that no other model included.</strong> This allows retrying not just on exceptions but also on specific return values (e.g., retry if the result is None, or if a status field is "pending"). Useful for polling patterns. Shows Devstral thinks about real-world use cases, not just the literal prompt.</p>
+            <p>Correct async detection with <code>asyncio.iscoroutinefunction</code>, correct <code>functools.wraps</code> usage. But no explicit <code>__signature__</code> or <code>__annotations__</code> setting, which means introspection won't show the original signature for decorated functions. The task specifically asked for this, so points deducted.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t5-codestral">
+        <div class="bm-verdict-pill low">6/10 · Counter bug</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>Correctly identified that both sync and async branches are needed.</strong> Codestral produced two separate wrapper functions and selected between them based on <code>asyncio.iscoroutinefunction</code>. The structure was right. But the retry counter increments in the <code>finally</code> block — which runs even on success. This means the first successful call always increments the counter, cutting the effective retry budget by one.</p>
+            <p>No <code>__signature__</code> preservation, no ParamSpec, no class method test. Codestral correctly identified the async/sync split as the key challenge but missed the signature preservation requirement entirely.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bm-pane" id="th-t5-lfm2">
+        <div class="bm-verdict-pill low">3/10 · 4 crash-level bugs</div>
+        <div class="bm-think-block">
+          <div class="bm-think-label">Thinking process</div>
+          <div class="bm-think-body">
+            <p><strong>LFM2 correctly identified that async detection is needed, then failed on every subsequent step.</strong> The <code>asyncio.iscoroutinefunction</code> call is present and correct. But the sync wrapper is declared as <code>async def</code> (so calling a sync function returns a coroutine). The backoff calculation references <code>max_delable</code> instead of <code>max_delay</code> — a NameError that crashes on the first retry attempt. A helper function is defined after the <code>return decorator</code> statement, so it's unreachable. And <code>raise e from type(e)</code> is invalid syntax since the second argument must be an exception instance, not a class.</p>
+            <p>Four crash-level bugs in roughly 30 lines. Each would have been caught by running the code once. LFM2 appears to generate structurally plausible code without verifying internal consistency.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
