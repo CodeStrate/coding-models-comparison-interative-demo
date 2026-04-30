@@ -38,3 +38,9 @@ content/
 # Project-specific
 .vercel
 .vercelignore
+
+# Private dev-tools entry — public repo never ships these. Set
+# VITE_USE_DEVTOOLS=true locally or in a private fork
+# to swap them in at build time.
+src/App.dev.tsx
+src/devtools/

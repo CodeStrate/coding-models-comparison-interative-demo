@@ -7,6 +7,13 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync, existsSync, cpSync, statSync } from 'node:fs'
 import { dirname, join, basename, relative } from 'node:path'
 import matter from 'gray-matter'
+import { config as dotenvConfig } from 'dotenv'
+
+// Load .env.local first (developer overrides), then .env. dotenv won't
+// overwrite already-set vars, so this gives the .local file priority while
+// still picking up shared defaults from .env.
+dotenvConfig({ path: '.env.local' })
+dotenvConfig()
 
 /** Recursively walk a directory, returning absolute paths to .md files. */
 function walkMarkdown(dir: string): string[] {

@@ -19,7 +19,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Build-time alias — see vite.config.ts. Resolves to App.tsx by default;
+       App.dev.tsx is only picked up when VITE_USE_DEVTOOLS=true. Both are
+       listed here so the type-checker is happy in either workflow. Paths are
+       resolved relative to this config file (modern TS, no baseUrl needed). */
+    "paths": {
+      "~app": ["./src/App.tsx", "./src/App.dev.tsx"]
+    }
   },
   "include": ["src"]
 }
