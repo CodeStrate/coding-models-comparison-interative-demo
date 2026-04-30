@@ -85,16 +85,16 @@ export function Blog() {
   const showFeatured = (section === 'all' || section === 'episodes') && featured
 
   return (
-    <div className="max-w-[1280px] mx-auto px-[clamp(20px,4vw,72px)] py-16">
-      {/* Page header — give it real air */}
-      <header className="pb-14 mb-20 border-b border-[color:var(--color-rule)]">
-        <div className="inline-flex items-center font-mono text-[12px] tracking-[0.16em] uppercase border border-[color:var(--color-ink)] rounded-sm px-2.5 py-1 mb-8">
+    <div className="max-w-[1280px] mx-auto px-[clamp(16px,4vw,72px)] py-10 sm:py-14 lg:py-16">
+      {/* Page header — consistent rhythm with the rest of the page */}
+      <header className="pb-10 sm:pb-12 mb-10 sm:mb-14 lg:mb-16 border-b border-[color:var(--color-rule)]">
+        <div className="inline-flex items-center font-mono text-[12px] tracking-[0.16em] uppercase border border-[color:var(--color-ink)] rounded-sm px-2.5 py-1 mb-6">
           The Blog
         </div>
-        <h1 className="font-sans text-[clamp(40px,5.5vw,72px)] font-bold leading-[1.05] tracking-tight max-w-4xl">
+        <h1 className="font-sans text-[clamp(36px,5.5vw,68px)] font-bold leading-[1.05] tracking-tight max-w-4xl">
           Field reports from the gauntlet.
         </h1>
-        <p className="mt-6 font-sans text-[18px] text-[color:var(--color-ink-soft)] max-w-2xl leading-relaxed">
+        <p className="mt-5 font-sans text-[16px] sm:text-[17px] text-[color:var(--color-ink-soft)] max-w-2xl leading-relaxed">
           Episodes, deliberations, and methodology notes from April of testing open-source coding models against
           backend tasks that actually break things.
         </p>
@@ -103,13 +103,13 @@ export function Blog() {
       {/* Featured */}
       {showFeatured && <FeaturedArticle doc={featured} />}
 
-      <div className="grid lg:grid-cols-[240px_1fr] gap-12 lg:gap-24">
+      <div className="grid lg:grid-cols-[220px_1fr] gap-10 sm:gap-12 lg:gap-16">
         {/* Sidebar nav */}
         <aside className="lg:sticky lg:top-32 lg:self-start">
-          <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[color:var(--color-ink-faint)] mb-5">
+          <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[color:var(--color-ink-faint)] mb-4">
             Browse
           </div>
-          <nav aria-label="Blog sections" className="flex flex-col gap-1 mb-12">
+          <nav aria-label="Blog sections" className="flex flex-col gap-3 sm:gap-4 mb-10 sm:mb-12">
             {SECTIONS.map(s => {
               const isActive = section === s.id
               return (
@@ -118,22 +118,22 @@ export function Blog() {
                   type="button"
                   onClick={() => setSection(s.id)}
                   className={[
-                    'group w-full text-left flex items-center gap-4 px-4 py-4 rounded-md transition-colors',
+                    'group w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors',
                     isActive
                       ? 'bg-[color:var(--color-rule-soft)]'
                       : 'hover:bg-[color:var(--color-rule-soft)]/60',
                   ].join(' ')}
                 >
                   <span className={[
-                    'inline-block w-[3px] h-7 rounded-sm transition-colors',
+                    'inline-block w-[3px] h-8 rounded-sm transition-colors shrink-0',
                     isActive ? 'bg-[color:var(--color-ink)]' : 'bg-transparent group-hover:bg-[color:var(--color-ink-faint)]',
                   ].join(' ')} />
-                  <span className="flex-1">
+                  <span className="flex-1 leading-[1.15]">
                     <span className={[
-                      'block font-sans text-[15px] leading-tight',
+                      'block font-sans text-[15px]',
                       isActive ? 'font-bold text-[color:var(--color-ink)]' : 'font-semibold text-[color:var(--color-ink)]',
                     ].join(' ')}>{s.label}</span>
-                    <span className="block font-sans text-[12.5px] mt-1 leading-snug text-[color:var(--color-ink-soft)]">
+                    <span className="block font-sans text-[12px] text-[color:var(--color-ink-soft)] mt-0.5">
                       {s.blurb}
                     </span>
                   </span>
@@ -154,10 +154,10 @@ export function Blog() {
           </div>
         </aside>
 
-        {/* Article list */}
+        {/* Article list — continuous list (border-t between rows, no gap) */}
         <div className="min-w-0">
-          <div className="flex items-baseline justify-between mb-12">
-            <h2 className="font-sans text-[32px] font-bold tracking-tight">
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 mb-6 sm:mb-8">
+            <h2 className="font-sans text-[28px] sm:text-[32px] font-bold tracking-tight">
               {SECTIONS.find(s => s.id === section)?.label}
             </h2>
             <span className="font-mono text-[12px] uppercase tracking-wider text-[color:var(--color-ink-faint)]">
@@ -165,7 +165,7 @@ export function Blog() {
             </span>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-10 sm:gap-14 pt-8 sm:pt-10 border-t border-[color:var(--color-rule)]">
             {visible.map((doc, i) => (
               <ArticleRow key={doc.slug} doc={doc} index={i} />
             ))}
@@ -182,10 +182,10 @@ function FeaturedArticle({ doc }: { doc: Doc }) {
       initial={{ y: 12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="mb-24 border border-[color:var(--color-ink)] rounded-2xl bg-[color:var(--color-surface)] overflow-hidden"
+      className="mb-12 sm:mb-16 lg:mb-20 border border-[color:var(--color-ink)] rounded-2xl bg-[color:var(--color-surface)] overflow-hidden"
     >
       <Link to={routeForDoc(doc)} className="grid md:grid-cols-[1fr_1.4fr]">
-        <div className="bg-gradient-to-br from-[color:var(--color-hero-blue)] via-[color:var(--color-hero-violet)] to-[color:var(--color-hero-rose)] p-12 flex flex-col justify-end min-h-[320px]">
+        <div className="bg-gradient-to-br from-[color:var(--color-hero-blue)] via-[color:var(--color-hero-violet)] to-[color:var(--color-hero-rose)] p-8 sm:p-12 flex flex-col justify-end min-h-[260px] sm:min-h-[320px]">
           <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--color-ink)]/70 mb-3">
             Featured
           </div>
@@ -193,7 +193,7 @@ function FeaturedArticle({ doc }: { doc: Doc }) {
             Episode<br />{doc.episodeNumber ?? '·'}
           </div>
         </div>
-        <div className="p-10 md:p-14 flex flex-col justify-center">
+        <div className="p-8 sm:p-10 md:p-14 flex flex-col justify-center">
           <div className="flex items-center gap-3 mb-5">
             <span className="font-mono text-[11px] uppercase tracking-[0.14em] border border-[color:var(--color-ink)] rounded px-2 py-1">
               {eyebrowFor(doc)}
@@ -231,23 +231,21 @@ function ArticleRow({ doc, index }: { doc: Doc; index: number }) {
     >
       <Link
         to={routeForDoc(doc)}
-        className="group block py-10 border-t border-[color:var(--color-rule)] hover:bg-[color:var(--color-rule-soft)]/40 transition-colors -mx-4 px-4 rounded-md"
+        className="group block py-8 sm:py-10 border-b border-[color:var(--color-rule)]"
       >
-        <div className="flex items-center gap-3 mb-4 flex-wrap">
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] border border-[color:var(--color-ink-soft)] text-[color:var(--color-ink-soft)] rounded-sm px-2 py-0.5">
+        <div className="flex items-center gap-3 mb-3 flex-wrap font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.14em] text-[color:var(--color-ink-faint)]">
+          <span className="border border-[color:var(--color-ink-soft)] text-[color:var(--color-ink-soft)] rounded-sm px-2 py-0.5">
             {eyebrowFor(doc)}
           </span>
-          {dateText && (
-            <span className="font-mono text-[11px] text-[color:var(--color-ink-faint)]">{dateText}</span>
-          )}
-          <span className="font-mono text-[11px] text-[color:var(--color-ink-faint)]">·</span>
-          <span className="font-mono text-[11px] text-[color:var(--color-ink-faint)]">{readTime(doc.excerpt)}</span>
+          {dateText && <span>{dateText}</span>}
+          <span aria-hidden="true" className="opacity-50">·</span>
+          <span>{readTime(doc.excerpt)}</span>
         </div>
-        <h3 className="font-sans text-[26px] md:text-[30px] font-bold leading-[1.2] tracking-tight text-[color:var(--color-ink)] group-hover:underline decoration-2 underline-offset-[6px]">
+        <h3 className="font-sans text-[22px] sm:text-[26px] md:text-[30px] font-bold leading-[1.2] tracking-tight text-[color:var(--color-ink)] group-hover:underline decoration-2 underline-offset-[6px]">
           {formatSnappyTitle(doc.title)}
         </h3>
         {doc.excerpt && (
-          <p className="mt-4 font-sans text-[16px] leading-relaxed text-[color:var(--color-ink-soft)] line-clamp-2 max-w-3xl">
+          <p className="mt-3 font-sans text-[15.5px] leading-relaxed text-[color:var(--color-ink-soft)] line-clamp-2 max-w-3xl">
             {cleanExcerpt(doc.excerpt)}
           </p>
         )}

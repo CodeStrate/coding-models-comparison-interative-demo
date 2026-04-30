@@ -12,7 +12,7 @@ export function Home() {
       <HeroCarousel />
 
       {/* leaderboard preview */}
-      <section className="px-6 pt-16 pb-28">
+      <section className="px-4 sm:px-6 pt-12 sm:pt-16 pb-20 sm:pb-28">
         <h2 className="font-mono font-bold uppercase tracking-[0.15em] text-center text-[clamp(24px,4vw,40px)] leading-none mb-14">
           Current Leaderboard
         </h2>
@@ -25,8 +25,8 @@ export function Home() {
       </section>
 
       {/* latest articles / episodes */}
-      <section className="px-6 py-16 border-t border-[color:var(--color-rule)]">
-        <div className="max-w-7xl mx-auto mb-8 flex items-baseline justify-between">
+      <section className="px-4 sm:px-6 py-16 border-t border-[color:var(--color-rule)]">
+        <div className="max-w-7xl mx-auto mb-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4">
           <h2 className="font-mono font-bold uppercase tracking-[0.15em] text-[clamp(22px,3.4vw,34px)]">Latest from the gauntlet</h2>
           <Link to="/blog" className="font-sans text-[15px] text-[color:var(--color-ink)] hover:text-black">
             View more →
@@ -75,14 +75,14 @@ function ArticleTile({ doc, delay }: { doc: Doc; delay: number }) {
       transition={{ duration: 0.4, delay }}
     >
       <Link to={href} className="group block border-b border-[color:var(--color-rule)] bg-transparent hover:bg-[color:var(--color-rule-soft)]/40 transition-colors">
-        <div className="grid md:grid-cols-[160px_1fr_90px] gap-6 sm:gap-10 py-5 sm:py-6">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-[160px_1fr_90px] md:gap-10 py-5 sm:py-6">
           <div className="flex flex-col items-start gap-1.5">
             <span className="inline-flex font-mono text-[10px] tracking-wide uppercase text-[color:var(--color-ink-soft)] border border-[color:var(--color-rule)] rounded-sm px-1.5 py-0.5">
               {eyebrow}
             </span>
             {dateText && <p className="font-mono text-[11px] text-[color:var(--color-ink-faint)] m-0">{dateText}</p>}
           </div>
-          <div className="min-w-0 pr-4 flex flex-col justify-start gap-1.5">
+          <div className="min-w-0 md:pr-4 flex flex-col justify-start gap-1.5">
             <h3 className="font-mono text-[16px] sm:text-[19px] uppercase tracking-wide font-semibold leading-[1.25] group-hover:underline text-[color:var(--color-ink)] m-0">{snappyTitle}</h3>
             {doc.excerpt && <p className="text-[14px] leading-snug text-[color:var(--color-ink-soft)] m-0 max-w-3xl line-clamp-2">{cleanExcerpt(doc.excerpt)}</p>}
           </div>
@@ -108,20 +108,27 @@ function LeaderboardPreview() {
     .slice(0, 4)
 
   return (
-    <div className="max-w-5xl mx-auto border-[1.5px] border-[color:var(--color-ink)] rounded-3xl bg-[color:var(--color-bg)] p-8">
-      <div className="grid grid-cols-[2fr_repeat(4,1fr)] gap-4 pb-5 border-b border-[color:var(--color-ink)] font-mono text-sm font-semibold tracking-wider uppercase">
+    <div className="max-w-5xl mx-auto border-[1.5px] border-[color:var(--color-ink)] rounded-3xl bg-[color:var(--color-bg)] p-6 sm:p-8">
+      <div className="hidden sm:grid grid-cols-[2fr_repeat(4,1fr)] gap-4 pb-5 border-b border-[color:var(--color-ink)] font-mono text-sm font-semibold tracking-wider uppercase">
         <span>Model</span>
         {tasks.map(task => <span key={task}>{taskShortLabel(task)}</span>)}
       </div>
       {rows.map((row) => (
-        <div key={row.slug} className="grid grid-cols-[2fr_repeat(4,1fr)] gap-4 py-5 font-mono text-[14px] uppercase tracking-wide border-t border-[color:var(--color-rule-soft)] first:border-t-0 items-center hover:bg-[color:var(--color-rule-soft)] transition-colors -mx-4 px-4 rounded-lg">
-          <div>
+        <div key={row.slug} className="sm:grid sm:grid-cols-[2fr_repeat(4,1fr)] sm:gap-4 py-5 font-mono text-[14px] uppercase tracking-wide border-t border-[color:var(--color-rule-soft)] first:border-t-0 items-center hover:bg-[color:var(--color-rule-soft)] transition-colors -mx-4 px-4 rounded-lg">
+          <div className="flex items-center justify-between gap-4 sm:block">
             <div className="font-headline tracking-[0.03em] text-[22px] leading-[0.95] uppercase">{formatPreviewName(row)}</div>
             <div className="text-[color:var(--color-ink-faint)] text-[12px] mt-1.5 font-mono">{formatPreviewMeta(row)}</div>
           </div>
-          {tasks.map(task => (
-            <span key={task} className="text-[color:var(--color-ink-soft)] font-medium">{formatTaskScore(row, task)}</span>
-          ))}
+          <div className="mt-4 sm:mt-0 grid grid-cols-2 gap-3 text-[12px] text-[color:var(--color-ink-soft)] font-medium sm:contents">
+            {tasks.map(task => (
+              <span key={task} className="sm:text-[color:var(--color-ink-soft)]">
+                <span className="sm:hidden text-[10px] text-[color:var(--color-ink-faint)] mr-2">
+                  {taskShortLabel(task)}
+                </span>
+                {formatTaskScore(row, task)}
+              </span>
+            ))}
+          </div>
         </div>
       ))}
     </div>

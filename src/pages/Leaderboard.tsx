@@ -22,8 +22,8 @@ export function Leaderboard() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 py-16">
-      <div className="flex items-baseline justify-between mb-10">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 mb-10">
         <div className="inline-flex items-center font-mono text-sm font-semibold tracking-wide border border-[color:var(--color-ink)] rounded px-3 py-2">
           LEADERBOARD
         </div>
@@ -37,7 +37,7 @@ export function Leaderboard() {
       </h1>
 
       <div className="border-[1.5px] border-[color:var(--color-ink)] rounded-2xl bg-[color:var(--color-bg)] overflow-x-auto">
-        <table className="w-full min-w-[1100px]">
+        <table className="w-full min-w-[980px]">
           <thead>
             <tr className="border-b border-[color:var(--color-ink)]">
               <Th label="Model" sortKey="name" current={sortKey} dir={sortDir} onSort={onSort} align="left" wide />

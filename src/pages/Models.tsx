@@ -81,7 +81,7 @@ export function Models() {
   }, [filter])
 
   return (
-    <div className="px-[clamp(28px,5.5vw,80px)] py-20">
+    <div className="px-[clamp(20px,5vw,80px)] py-16 sm:py-20">
       <div className="flex items-baseline justify-between gap-8 mb-16 max-w-[1400px] mx-auto flex-wrap">
         <div className="inline-flex items-center font-mono text-sm font-semibold tracking-wide border border-[color:var(--color-ink)] rounded px-3 py-2">
           MODELS
@@ -154,7 +154,7 @@ export function Models() {
 
 function FilterBar({ filter, onChange }: { filter: Filter; onChange: (f: Filter) => void }) {
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-wrap gap-3">
       {FILTERS.map(f => (
         <button
           key={f.id}

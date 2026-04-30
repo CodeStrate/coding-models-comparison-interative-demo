@@ -89,7 +89,7 @@ export function DocReader() {
   const titleClean = doc.title.replace(/^LLM Arena V2\.2:\s*/i, '').replace(/^LLM Arena V2\.1:\s*/i, '')
 
   return (
-    <article className="max-w-[1400px] mx-auto px-[clamp(20px,4vw,64px)] py-12">
+    <article className="max-w-[1400px] mx-auto px-[clamp(16px,4vw,64px)] py-10 sm:py-12">
       {/* Breadcrumb */}
       <div className="mb-8 font-mono text-[11px] uppercase tracking-wider text-[color:var(--color-ink-faint)] flex items-center gap-2">
         <Link to="/blog" className="hover:text-[color:var(--color-ink)]">Blog</Link>
@@ -127,7 +127,7 @@ export function DocReader() {
       </header>
 
       {/* Body + sidebar */}
-      <div className="grid md:grid-cols-[1fr_240px] lg:grid-cols-[1fr_280px] gap-10 lg:gap-20 relative">
+      <div className="grid md:grid-cols-[1fr_240px] lg:grid-cols-[1fr_280px] gap-8 sm:gap-10 lg:gap-20 relative">
         <div ref={articleRef} className="min-w-0 max-w-[720px] mx-auto md:mx-0">
           <Prose>{content}</Prose>
 

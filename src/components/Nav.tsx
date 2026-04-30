@@ -44,26 +44,34 @@ const links: NavLink[] = [
 ]
 
 export function Nav({ onOpenSearch }: { onOpenSearch: () => void }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMenuOpen(false)
+  }, [location.pathname, location.hash])
+
   return (
     <header className="sticky top-0 z-50 bg-[color:var(--color-bg)] border-b border-[color:var(--color-ink)]">
-      <div className="max-w-none mx-auto px-4 md:px-8 flex items-center gap-12 min-h-[96px]">
-        <Link to="/" className="flex items-center gap-3 shrink-0 group" aria-label="LLM Gauntlet — home">
+      <div className="max-w-none mx-auto px-4 sm:px-6 md:px-8 flex items-center gap-6 md:gap-12 min-h-[76px] md:min-h-[96px]">
+        <Link to="/" className="flex items-center gap-2.5 sm:gap-3 shrink-0 group" aria-label="LLM Gauntlet — home">
           <GauntletLogo
             preserveAspectRatio="xMidYMid meet"
-            className="h-[52px] w-auto text-[color:var(--color-ink)] transition-transform group-hover:scale-[1.04]"
+            className="h-9 w-9 sm:h-[42px] sm:w-[42px] text-[color:var(--color-ink)] transition-transform group-hover:scale-[1.04]"
           />
-          <span className="font-mono font-semibold text-[17px] leading-tight tracking-[0.02em] uppercase text-[color:var(--color-ink)]">
+          <span className="font-mono font-semibold text-[13px] sm:text-[16px] leading-tight tracking-[0.02em] uppercase text-[color:var(--color-ink)]">
             LLM<br />Gauntlet
           </span>
         </Link>
 
-        <nav className="font-mono font-regular hidden md:flex flex-1 justify-center gap-[clamp(36px,5vw,88px)] h-[96px]">
+        <nav className="font-mono font-regular hidden lg:flex flex-1 justify-center gap-[clamp(24px,3vw,88px)] h-[96px]">
           {links.map((link) => (
             <NavItem key={link.to} link={link} />
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
           <ThemeToggle />
           <button
             type="button"
@@ -75,7 +83,56 @@ export function Nav({ onOpenSearch }: { onOpenSearch: () => void }) {
             <span className="hidden sm:inline font-sans text-[13px] text-[color:var(--color-ink-faint)] mr-2">Search…</span>
             <kbd className="hidden sm:inline font-mono text-[11px] tracking-wider uppercase text-[color:var(--color-ink-soft)] border border-[color:var(--color-rule)] rounded px-1.5 py-0.5">⌘K</kbd>
           </button>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(open => !open)}
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={menuOpen}
+            className="lg:hidden h-10 w-10 grid place-items-center rounded-md border border-[color:var(--color-rule)] hover:border-[color:var(--color-ink)] hover:bg-[color:var(--color-rule-soft)] transition-colors"
+          >
+            <MenuIcon open={menuOpen} />
+          </button>
         </div>
+      </div>
+
+      <div
+        className={[
+          'lg:hidden border-t border-[color:var(--color-rule)] bg-[color:var(--color-bg)] transition-[max-height,opacity] duration-200 overflow-hidden',
+          menuOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0 pointer-events-none',
+        ].join(' ')}
+      >
+        <nav className="px-4 sm:px-6 py-4 flex flex-col gap-3" aria-label="Primary">
+          {links.map(link => (
+            <div key={link.to} className="flex flex-col gap-2">
+              <Link
+                to={link.to}
+                className="font-mono text-[13px] uppercase tracking-[0.12em] text-[color:var(--color-ink)]"
+              >
+                {link.label}
+              </Link>
+              {link.dropdown && (
+                <div className="pl-4 flex flex-col gap-2">
+                  {link.dropdown.map(item => (
+                    <Link
+                      key={item.to + item.label}
+                      to={item.to}
+                      className="flex flex-col gap-1 rounded-md border border-[color:var(--color-rule)] px-3 py-2 hover:border-[color:var(--color-ink)] hover:bg-[color:var(--color-rule-soft)] transition-colors"
+                    >
+                      <span className="font-mono text-[12px] uppercase tracking-[0.1em] text-[color:var(--color-ink)]">
+                        {item.label}
+                      </span>
+                      {item.description && (
+                        <span className="font-sans text-[12px] text-[color:var(--color-ink-soft)]">
+                          {item.description}
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
       </div>
     </header>
   )
@@ -209,6 +266,24 @@ function SearchIcon() {
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[color:var(--color-ink-soft)]">
       <circle cx="11" cy="11" r="7" />
       <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  )
+}
+
+function MenuIcon({ open }: { open: boolean }) {
+  if (open) {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    )
+  }
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
     </svg>
   )
 }

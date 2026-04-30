@@ -44,16 +44,16 @@ function TaskRow({ id, score, dim }: { id: TaskId; score: TaskScore | undefined;
   const hasNote = Boolean(score?.note);
 
   return (
-    <div className={['grid grid-cols-[80px_1fr_140px] items-center gap-4 px-5 py-4 border-b last:border-b-0 border-[color:var(--color-rule-soft)]', dim ? 'bg-[color:var(--color-bg-deep)]/50' : ''].join(' ')}>
-      <div className="font-mono text-xs uppercase tracking-wider text-[color:var(--color-ink-soft)] self-start mt-0.5">
+    <div className={['grid grid-cols-[64px_1fr_110px] sm:grid-cols-[80px_1fr_140px] items-center gap-3 sm:gap-4 px-4 sm:px-5 py-4 border-b last:border-b-0 border-[color:var(--color-rule-soft)]', dim ? 'bg-[color:var(--color-bg-deep)]/50' : ''].join(' ')}>
+      <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[color:var(--color-ink-soft)] self-start mt-0.5">
         {id.toUpperCase()}
       </div>
       <div>
-        <div className="font-sans text-[15px] font-semibold leading-tight">
+        <div className="font-sans text-[14px] sm:text-[15px] font-semibold leading-tight">
           {taskLabel(id)}
         </div>
         {hasNote && (
-          <div className="text-[13px] text-[color:var(--color-ink-soft)] mt-1.5 leading-snug">
+          <div className="text-[12px] sm:text-[13px] text-[color:var(--color-ink-soft)] mt-1.5 leading-snug">
             {score!.note}
           </div>
         )}

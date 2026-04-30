@@ -105,7 +105,7 @@ export function HeroCarousel() {
       onWheel={handleWheel}
       className="relative overflow-hidden"
     >
-      <div className="relative h-[clamp(560px,72vh,736px)] isolate">
+      <div className="relative h-[clamp(420px,68vh,736px)] sm:h-[clamp(520px,80vh,736px)] isolate">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={slide.name}
@@ -113,7 +113,7 @@ export function HeroCarousel() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute inset-0 grid place-items-center px-20 pt-24 cursor-pointer"
+            className="absolute inset-0 grid place-items-center px-6 sm:px-10 lg:px-20 pt-20 sm:pt-24 cursor-pointer"
             style={{ background: `linear-gradient(180deg, ${slide.gradientFrom} 0%, ${slide.gradientTo} 100%)` }}
             onClick={() => navigate(`/models/${slide.model.slug}`)}
           >
@@ -121,10 +121,10 @@ export function HeroCarousel() {
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.05 }}
-              className="flex items-center gap-[clamp(42px,6vw,76px)] text-white select-none pointer-events-none"
+              className="flex flex-col sm:flex-row items-center gap-6 sm:gap-[clamp(42px,6vw,76px)] text-white select-none pointer-events-none text-center sm:text-left"
             >
               <Glyph slide={slide} />
-              <span className="font-headline tracking-[0.04em] uppercase leading-none whitespace-nowrap text-[clamp(86px,12vw,180px)]">
+              <span className="font-headline tracking-[0.04em] uppercase leading-none sm:whitespace-nowrap text-[clamp(56px,14vw,180px)]">
                 {slide.wordmark}
               </span>
             </motion.div>
@@ -134,20 +134,22 @@ export function HeroCarousel() {
         <button
           onClick={prev}
           aria-label="Previous slide"
-          className="absolute top-1/2 -translate-y-1/2 left-5 w-20 h-24 grid place-items-center text-white z-10 hover:scale-110 transition-transform"
+          className="hidden sm:grid absolute top-1/2 -translate-y-1/2 left-5 w-14 h-20 md:w-20 md:h-24 place-items-center text-white z-10 hover:scale-110 transition-transform"
         >
           <Chevron dir="left" />
         </button>
         <button
           onClick={next}
           aria-label="Next slide"
-          className="absolute top-1/2 -translate-y-1/2 right-5 w-20 h-24 grid place-items-center text-white z-10 hover:scale-110 transition-transform"
+          className="hidden sm:grid absolute top-1/2 -translate-y-1/2 right-5 w-14 h-20 md:w-20 md:h-24 place-items-center text-white z-10 hover:scale-110 transition-transform"
         >
           <Chevron dir="right" />
         </button>
 
-        {/* Bullets — ghost (outlined) when inactive, solid coloured pill when active. */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-7 flex items-center gap-3 z-10">
+        {/* Bullets — ghost (outlined) when inactive, solid coloured pill when active.
+            The visible bullet is small but the <button> hit target is padded up to
+            44px so touch users can hit it reliably. */}
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-4 sm:bottom-6 flex items-center gap-1 sm:gap-2 z-10">
           {slides.map((s, i) => {
             const isActive = i === idx
             return (
@@ -156,14 +158,18 @@ export function HeroCarousel() {
                 onClick={() => setIdx(i)}
                 aria-label={`Go to slide ${i + 1}: ${s.wordmark}`}
                 aria-current={isActive ? 'true' : undefined}
-                className={[
-                  'rounded-full transition-all duration-300 ring-1 ring-inset',
-                  isActive
-                    ? 'h-3 w-10 ring-white/10'
-                    : 'h-3 w-3 bg-white/0 ring-white/70 hover:bg-white/30 hover:ring-white',
-                ].join(' ')}
-                style={isActive ? { backgroundColor: s.activeDot } : undefined}
-              />
+                className="grid place-items-center w-11 h-11 group/dot"
+              >
+                <span
+                  className={[
+                    'rounded-full transition-all duration-300 ring-1 ring-inset',
+                    isActive
+                      ? 'h-3 w-10 ring-white/10'
+                      : 'h-3 w-3 bg-white/0 ring-white/70 group-hover/dot:bg-white/30 group-hover/dot:ring-white',
+                  ].join(' ')}
+                  style={isActive ? { backgroundColor: s.activeDot } : undefined}
+                />
+              </button>
             )
           })}
         </div>
@@ -181,7 +187,7 @@ export function HeroCarousel() {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-12 right-12 text-white font-mono text-[11px] tracking-widest uppercase flex flex-col items-center gap-2 opacity-60 z-10 hidden md:flex">
+        <div className="absolute bottom-12 right-12 text-white font-mono text-[11px] tracking-widest uppercase flex flex-col items-center gap-2 opacity-60 z-10 hidden lg:flex">
           <span style={{ writingMode: 'vertical-rl' }}>Scroll</span>
           <motion.div 
             className="w-px h-8 bg-white"

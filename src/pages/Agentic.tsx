@@ -5,7 +5,7 @@ import { BrandIcon } from '../components/BrandIcon'
 
 export function Agentic() {
   return (
-    <article className="px-6 py-20">
+    <article className="px-4 sm:px-6 py-12 sm:py-20">
       <div className="max-w-7xl mx-auto">
         <div className="inline-flex items-center font-mono text-[28px] tracking-[0.08em] uppercase border border-[color:var(--color-ink)] rounded-md px-3 py-2 mb-14">
           Episode: 1
@@ -56,7 +56,7 @@ function AgenticRailItem({ row }: { row: AgenticRow }) {
 
   return (
     <a href={`#${row.modelSlug}`} className="block border-b border-[color:var(--color-ink)] py-5 hover:bg-[color:var(--color-rule-soft)] transition-colors">
-      <div className="font-headline text-[34px] leading-none">{row.rank}</div>
+      <div className="font-headline text-[28px] sm:text-[34px] leading-none">{row.rank}</div>
       <div className="font-sans font-bold leading-tight mt-2">{model?.name ?? row.modelSlug}</div>
       <div className="font-mono text-[11px] uppercase text-[color:var(--color-ink-soft)] mt-1">{row.verdict}</div>
     </a>
@@ -68,13 +68,13 @@ function ModelRunSection({ row }: { row: AgenticRow }) {
   const tone = TONE_ACCENT[row.tone]
 
   return (
-    <section id={row.modelSlug} className="scroll-mt-36 border-b border-[color:var(--color-ink)] py-12 block bg-transparent">
-      <header className="flex items-start gap-6 sm:gap-10 mb-8">
-        <div className={['font-headline text-[clamp(64px,8vw,110px)] leading-none', tone.text].join(' ')}>
+    <section id={row.modelSlug} className="scroll-mt-36 border-b border-[color:var(--color-ink)] py-10 sm:py-12 block bg-transparent">
+      <header className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-10 mb-8">
+        <div className={['font-headline text-[clamp(56px,10vw,110px)] leading-none', tone.text].join(' ')}>
           {row.rank}
         </div>
-        {model && <BrandIcon model={model} className="w-20 h-20 sm:w-[100px] sm:h-[100px] text-[color:var(--color-ink)] shrink-0" aria-hidden />}
-        <div className="min-w-0 pt-2">
+        {model && <BrandIcon model={model} className="w-16 h-16 sm:w-[100px] sm:h-[100px] text-[color:var(--color-ink)] shrink-0" aria-hidden />}
+        <div className="min-w-0 pt-1 sm:pt-2">
           {model ? (
             <Link to={`/models/${model.slug}`} className="group inline-block">
               <h2 className="font-mono whitespace-pre-line text-[clamp(28px,3vw,48px)] font-semibold leading-[1.05] tracking-[0.04em] uppercase text-[color:var(--color-ink)] group-hover:underline transition-all">

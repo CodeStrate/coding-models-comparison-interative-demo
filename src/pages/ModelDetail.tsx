@@ -25,7 +25,7 @@ export function ModelDetail() {
   const variants = allModels.filter(m => modelGroupKey(m) === familyKey && m.slug !== model.slug)
 
   return (
-    <article className="max-w-4xl mx-auto px-6 py-16">
+    <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <Link to="/models" className="font-mono text-[14px] uppercase tracking-wider text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)] mb-10 inline-block transition-colors">
         ← Back to models
       </Link>
@@ -78,33 +78,35 @@ export function ModelDetail() {
 
 function Header({ model }: { model: Model }) {
   return (
-    <header className="flex items-start gap-6 sm:gap-10 mb-10">
-      <BrandIcon model={model} className="w-[80px] h-[80px] sm:w-[120px] sm:h-[120px] text-[color:var(--color-ink)] shrink-0" aria-hidden />
-      <div className="min-w-0 flex-1 pt-2">
-        <div className="font-mono text-[13px] uppercase tracking-widest text-[color:var(--color-ink-soft)] mb-3">
-          {model.vendor}
+    <header className="flex flex-col lg:flex-row lg:items-start gap-6 sm:gap-10 mb-10">
+      <div className="flex items-start gap-6 sm:gap-10 flex-1 min-w-0">
+        <BrandIcon model={model} className="w-[72px] h-[72px] sm:w-[120px] sm:h-[120px] text-[color:var(--color-ink)] shrink-0" aria-hidden />
+        <div className="min-w-0 flex-1 pt-1 sm:pt-2">
+          <div className="font-mono text-[12px] sm:text-[13px] uppercase tracking-widest text-[color:var(--color-ink-soft)] mb-3">
+            {model.vendor}
+          </div>
+          <h1 className="font-headline text-[clamp(40px,8vw,88px)] leading-[0.95] tracking-[0.02em] uppercase mt-1">
+            {model.name}
+          </h1>
+          {model.variant && (
+            <div className="font-mono text-[13px] sm:text-[14px] uppercase tracking-[0.15em] text-[color:var(--color-ink-soft)] mt-4">
+              {model.variant}
+            </div>
+          )}
+          {model.badges && model.badges.length > 0 && (
+            <div className="flex flex-wrap gap-3 mt-6">
+              {model.badges.map(b => (
+                <span key={b} className="font-mono text-[11px] uppercase tracking-widest border border-[color:var(--color-ink)] rounded px-2.5 py-1">
+                  {b}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
-        <h1 className="font-headline text-[clamp(48px,7vw,88px)] leading-[0.95] tracking-[0.02em] uppercase mt-1">
-          {model.name}
-        </h1>
-        {model.variant && (
-          <div className="font-mono text-[14px] uppercase tracking-[0.15em] text-[color:var(--color-ink-soft)] mt-4">
-            {model.variant}
-          </div>
-        )}
-        {model.badges && model.badges.length > 0 && (
-          <div className="flex flex-wrap gap-3 mt-6">
-            {model.badges.map(b => (
-              <span key={b} className="font-mono text-[11px] uppercase tracking-widest border border-[color:var(--color-ink)] rounded px-2.5 py-1">
-                {b}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
       {model.averageScore !== undefined && (
-        <div className="text-right shrink-0 pt-2">
-          <div className="font-headline text-[clamp(56px,9vw,110px)] leading-[0.85]">
+        <div className="text-left lg:text-right shrink-0 pt-2">
+          <div className="font-headline text-[clamp(52px,10vw,110px)] leading-[0.85]">
             {model.averageScore.toFixed(2)}
           </div>
           <div className="font-mono text-[12px] uppercase tracking-widest text-[color:var(--color-ink-soft)] mt-3">
@@ -118,8 +120,8 @@ function Header({ model }: { model: Model }) {
 
 function Summary({ model }: { model: Model }) {
   return (
-    <div className="border-l-[4px] border-[color:var(--color-ink)] pl-6 py-3 bg-[color:var(--color-rule-soft)]/50 rounded-r-xl">
-      <p className="text-[18px] leading-relaxed text-[color:var(--color-ink)]">{model.summary}</p>
+    <div className="border-l-[4px] border-[color:var(--color-ink)] pl-5 sm:pl-6 py-3 bg-[color:var(--color-rule-soft)]/50 rounded-r-xl">
+      <p className="text-[16px] sm:text-[18px] leading-relaxed text-[color:var(--color-ink)]">{model.summary}</p>
     </div>
   )
 }
