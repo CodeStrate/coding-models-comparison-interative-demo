@@ -5,13 +5,15 @@ import { CHAMPION_ROWS, AGENTIC_V2_SCORES } from '../lib/leaderboards'
 import { BrandIcon } from '../components/BrandIcon'
 import { ChampionsTable } from '../components/leaderboard/ChampionsTable'
 import { AgenticTable } from '../components/leaderboard/AgenticTable'
+import { StockTable } from '../components/leaderboard/StockTable'
 
 // ---------------------------------------------------------------------------
 // Tab types
 // ---------------------------------------------------------------------------
-type Tab = 'reap' | 'tuned' | 'champions' | 'agentic'
+type Tab = 'stock' | 'reap' | 'tuned' | 'champions' | 'agentic'
 
 const TABS: { id: Tab; label: string; blurb: string }[] = [
+  { id: 'stock',     label: 'Stock',              blurb: 'V2.0 · Default LM Studio parameters — historical baseline' },
   { id: 'reap',      label: 'REAP',               blurb: 'V2.1 Model Card · Expert-pruned MoE evaluation — author-recommended parameters' },
   { id: 'tuned',     label: 'Tuned',              blurb: 'V2.1 Track A/B · Prompted evaluation — strict or reasoning-mode configs' },
   { id: 'champions', label: "Champion's Gauntlet", blurb: 'Track C · T8 (Circuit Breaker) + T9 (DI Container) · Qualifier gate ≥ 7.5 avg' },
@@ -51,7 +53,7 @@ function scoreSortValue(s: ReturnType<typeof findScore>): number {
 // Main Leaderboard page
 // ---------------------------------------------------------------------------
 export function Leaderboard() {
-  const [tab, setTab] = useState<Tab>('reap')
+  const [tab, setTab] = useState<Tab>('stock')
   const [sortKey, setSortKey] = useState<SortKey>('avg')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
@@ -86,6 +88,7 @@ export function Leaderboard() {
           LEADERBOARD
         </div>
         <div className="font-mono text-xs text-[color:var(--color-ink-faint)]">
+          {tab === 'stock' && `10 models · V2.0 baseline`}
           {tab === 'reap' && `${reapModels.length} models · 7 tasks · click column to sort`}
           {tab === 'tuned' && `${tunedModels.length} models · 7 tasks · click column to sort`}
           {tab === 'champions' && `${CHAMPION_ROWS.length} contenders · T8 + T9`}
@@ -94,24 +97,27 @@ export function Leaderboard() {
       </div>
 
       <h1 className="font-mono font-bold uppercase tracking-[0.04em] text-center text-[clamp(36px,5vw,72px)] leading-none mb-10">
+        {tab === 'stock' && 'Stock Leaderboard'}
         {tab === 'reap' && 'REAP Leaderboard'}
         {tab === 'tuned' && 'Tuned Leaderboard'}
         {tab === 'champions' && "Champion's Gauntlet"}
         {tab === 'agentic' && 'Agentic V2'}
       </h1>
 
-      {/* Tab bar */}
+      {/* Tab bar — rounded chips */}
       <div className="flex flex-wrap gap-2 mb-3">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={[
-              'font-mono text-xs uppercase tracking-wide px-3 py-1.5 rounded border transition-colors',
-              tab === t.id
-                ? 'border-[color:var(--color-ink)] text-[color:var(--color-ink)]'
-                : 'border-[color:var(--color-rule)] text-[color:var(--color-ink-soft)] hover:border-[color:var(--color-ink)] hover:text-[color:var(--color-ink)]',
-            ].join(' ')}
+            style={{
+              border: tab === t.id
+                ? '1.5px solid var(--color-ink)'
+                : '1.5px solid var(--color-ink)',
+              background: tab === t.id ? 'var(--color-ink)' : 'transparent',
+              color: tab === t.id ? 'var(--color-bg)' : 'var(--color-ink-soft)',
+            }}
+            className="font-mono text-xs font-semibold tracking-wide rounded-full px-5 py-2 transition-colors hover:opacity-80"
           >
             {t.label}
           </button>
@@ -120,6 +126,7 @@ export function Leaderboard() {
 
       <p className="font-mono text-xs text-[color:var(--color-ink-faint)] mb-8 mt-1">{tabBlurb}</p>
 
+      {tab === 'stock' && <StockTable />}
       {tab === 'reap' && (
         <ModelTable models={reapModels} sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
       )}
